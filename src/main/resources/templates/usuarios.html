@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Datos Personales</title>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Datos Personales</h2>
+
+    <!-- Mostrar los datos personales -->
+    <div th:if="${datosPersonales != null}">
+        <p><strong>Nombre:</strong> <span th:text="${datosPersonales.nombre}"></span></p>
+        <p><strong>Apellidos:</strong> <span th:text="${datosPersonales.apellidos}"></span></p>
+        <p><strong>Dirección:</strong> <span th:text="${datosPersonales.direccion}"></span></p>
+        <p><strong>Teléfono:</strong> <span th:text="${datosPersonales.telefono}"></span></p>
+        <p><strong>Correo Electrónico:</strong> <span th:text="${datosPersonales.correoElectronico}"></span></p>
+    </div>
+
+    <!-- Formulario para editar los datos personales -->
+    <form th:if="${datosPersonales != null}" th:action="@{'/editar-datos/' + ${datosPersonales.id}}" method="post">
+        <div class="mb-3">
+            <label for="direccion" class="form-label">Dirección:</label>
+            <input type="text" class="form-control" id="direccion" name="direccion" th:value="${datosPersonales.direccion}">
+        </div>
+        <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono:</label>
+            <input type="text" class="form-control" id="telefono" name="telefono" th:value="${datosPersonales.telefono}">
+        </div>
+        <div class="mb-3">
+            <label for="correoElectronico" class="form-label">Correo Electrónico:</label>
+            <input type="email" class="form-control" id="correoElectronico" name="correoElectronico" th:value="${datosPersonales.correoElectronico}">
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </form>
+
+    <p th:unless="${datosPersonales != null}">Datos personales no encontrados.</p>
+
+    <a href="/logout" class="btn btn-danger">Cerrar Sesión</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
