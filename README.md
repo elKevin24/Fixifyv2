@@ -1,7 +1,7 @@
-Fixify
+🚀 Fixify
 Fixify es un proyecto basado en Spring Boot. Utiliza Maven para la gestión de dependencias y el empaquetado del proyecto. El proyecto está configurado para ser empaquetado como un archivo WAR.
 
-Dependencias
+📦 Dependencias
 El proyecto utiliza las siguientes dependencias:
 
 Spring Boot Starter Data JPA: Proporciona soporte para la persistencia de datos utilizando Spring Data y Hibernate.
