@@ -1,9 +1,8 @@
-package com.example.demo.service;
+package com.example.fixify.service;
 
-import com.example.demo.models.Device;
+import com.example.fixify.models.Device;
+import com.example.fixify.repository.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.example.demo.repository.DeviceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

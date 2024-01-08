@@ -1,18 +1,21 @@
-package com.example.demo.controllers;
+package com.example.fixify.controllers;
 
-import com.example.demo.models.Customer;
-import com.example.demo.models.Device;
-import com.example.demo.service.CustomerService;
-import com.example.demo.service.DeviceService;
-import com.example.demo.service.TicketService;
+
+import com.example.fixify.models.Customer;
+import com.example.fixify.models.Device;
+import com.example.fixify.models.Ticket;
+import com.example.fixify.service.CustomerService;
+import com.example.fixify.service.DeviceService;
+import com.example.fixify.service.TicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import com.example.demo.models.Ticket;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/tickets")
@@ -34,6 +37,7 @@ public class TicketController {
     @GetMapping
     public String listTickets(Model model) {
         model.addAttribute("tickets", ticketService.findAllTickets());
+        model.addAttribute("customers", customerService.findAllCustomer());
         model.addAttribute("ticket", new Ticket());
         model.addAttribute("customer", new Customer()); // Agregar objeto Customer
         model.addAttribute("device", new Device());     // Agregar objeto Device

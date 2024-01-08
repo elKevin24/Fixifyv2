@@ -1,12 +1,13 @@
-package com.example.demo.service;
+package com.example.fixify.service;
 
-import com.example.demo.repository.TicketRepository;
+
+import com.example.fixify.models.Ticket;
+import com.example.fixify.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
-
-import com.example.demo.models.Ticket;
 
 @Service
 public class TicketService {

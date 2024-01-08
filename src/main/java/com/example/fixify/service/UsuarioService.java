@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UsuarioDetailsServiceImpl implements UserDetailsService {
+public class UsuarioService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
 
     @Autowired
-    public UsuarioDetailsServiceImpl(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
 
