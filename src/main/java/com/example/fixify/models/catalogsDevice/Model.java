@@ -1,2 +1,21 @@
-package com.example.fixify.models.catalogsDevice;public class Model {
+package com.example.fixify.models.catalogsDevice;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+
+@Entity
+@Data
+@Table(name = "device_models")
+public class Model {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "name")
+    private String name;
+
+
+
+    // Constructores, getters y setters
 }

@@ -75,48 +75,45 @@
 
                 <div class="card-body">
                     <h2 class="card-title">Crear un nuevo Ticket</h2>
-                    <form th:action="@{/tickets}" th:object="${ticket}" method="post">
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Descripción:</label>
-                            <input type="text" class="form-control" id="description" th:field="*{description}"
-                                   required/>
-                        </div>
-
+                    <form  th:object="${ticket}" id="create">
                         <h3>Detalles del Cliente</h3>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="customerSelect">Cliente:</label>
-                                <select  id="customerSelect" name="customerId">
+                                <select  id="customerSelect" name="customerId" required th:field="${ticket.customer}">
                                     <option value="">Seleccione un cliente</option>
                                     <option th:each="customer : ${customers}" th:value="${customer.id}" th:text="${customer.firstName} + ' ' + ${customer.lastName}"></option>
                                 </select>
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newCustomerModal">Nuevo Cliente</button>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="customer.firstName" class="form-label">Nombre del Cliente:</label>
-                                <input type="text" class="form-control" id="customer.firstName"
-                                       th:field="*{customer.firstName}" required/>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="customer.phone" class="form-label">Teléfono del Cliente:</label>
-                                <input type="text" class="form-control" id="customer.phone" th:field="*{customer.phone}"
-                                       required/>
                             </div>
                         </div>
 
                         <h3>Detalles del Dispositivo</h3>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="deviceType" class="form-label">Tipo de Dispositivo:</label>
-                                <input type="text" class="form-control" id="deviceType" th:field="*{device.deviceType}"
-                                       value="MONITOR" required/>
+                                <!-- Selector para DeviceCategory -->
+                                <label for="categorySelect">Categoría:</label>
+                                <select id="categorySelect" name="category" required>
+                                    <option value="">Seleccione una Categoria</option>
+                                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                                </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="brand" class="form-label">Marca:</label>
-                                <input type="text" class="form-control" id="brand" th:field="*{device.brand}"
-                                       value="AOC" required/>
+                                <label for="brandSelect">Marca:</label>
+                                <select id="brandSelect" name="brand" required>
+                                    <option value="">Seleccione una Marca</option>
+                                    <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>
+                                </select>
                             </div>
+
                         </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Descripción Problema:</label>
+                            <input type="text" class="form-control" id="description" th:field="*{description}"
+                                   required/>
+                        </div>
+
 
                         <button class="btn btn-primary" type="submit">Crear Ticket</button>
                     </form>
@@ -131,32 +128,32 @@
         <div>
             <h2>Listado de Tickets</h2>
             <div class="table-responsive">
-                <table class="table table-sm table-striped table-hover display" id="myTable" style="width:100%">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Fecha de Creación</th>
-                        <th>Status</th>
-                        <th>Cliente</th>
-                        <th>Técnico</th>
-                        <th>Dispositivo</th>
-                        <th>Descripción</th>
-                        <!-- Más cabeceras si es necesario -->
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="ticket : ${tickets}">
-                        <td th:text="${ticket.id}"></td>
-                        <td th:text="${ticket.creationDate}"></td>
-                        <td th:text="${ticket.status.name}"></td>
-                        <td th:text="${ticket.customer.firstName}"></td>
-                        <td th:text="${ticket.technician?.firstName}"></td>
-                        <td th:text="${ticket.device?.description}"></td>
-                        <td th:text="${ticket.description}"></td>
-                        <!-- Más columnas si es necesario -->
-                    </tr>
-                    </tbody>
-                </table>
+<!--                <table class="table table-sm table-striped table-hover display" id="myTable" style="width:100%">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>ID</th>-->
+<!--                        <th>Fecha de Creación</th>-->
+<!--                        <th>Status</th>-->
+<!--                        <th>Cliente</th>-->
+<!--                        <th>Técnico</th>-->
+<!--                        <th>Dispositivo</th>-->
+<!--                        <th>Descripción</th>-->
+<!--                        &lt;!&ndash; Más cabeceras si es necesario &ndash;&gt;-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr th:each="ticket : ${tickets}">-->
+<!--                        <td th:text="${ticket?.id}"></td>-->
+<!--                        <td th:text="${ticket?.creationDate}"></td>-->
+<!--                        <td th:text="${ticket.status?.name}"></td>-->
+<!--                        <td th:text="${ticket.customer?.firstName}"></td>-->
+<!--                        <td th:text="${ticket.technician?.firstName}"></td>-->
+<!--                        <td th:text="${ticket.device?.description}"></td>-->
+<!--                        <td th:text="${ticket?.description}"></td>-->
+<!--                        &lt;!&ndash; Más columnas si es necesario &ndash;&gt;-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
             </div>
         </div>
     </section>
@@ -184,9 +181,57 @@
 ></script>
 <script src="js/ticketForm.js"></script>
 <script th:inline="javascript">
+    $(document).ready(function() {
+        $('#create').submit(function(event) {
+            event.preventDefault();
+
+            var formData = $(this).serialize(); // Serializa los datos del formulario
+
+            $.ajax({
+                url: '/fixify/tickets', // URL del controlador
+                type: 'POST',
+                data: formData,
+                beforeSend: function(xhr) {
+                    // Incluye el token CSRF en la cabecera de la solicitud
+                    xhr.setRequestHeader("X-CSRF-TOKEN", $("meta[name='_csrf']").attr("content"));
+                },
+                success: function(response) {
+                    // Manejar la respuesta exitosa
+                    alert('Ticket creado con éxito!');
+                },
+                error: function(xhr, status, error) {
+                    // Manejar errores
+                    alert('Error al crear el ticket: ' + xhr.responseText);
+                }
+            });
+        });
+    });
+
     /*<![CDATA[*/
     document.addEventListener('DOMContentLoaded', function () {
         $('#customerSelect').selectize({
+            create: function(input, callback) {
+                // Guarda el callback para usar después
+                this.newCustomerCallback = callback;
+
+                // Abre el modal
+                $('#firstName').val(input); // Puedes pre-rellenar el modal con el input del usuario
+                $('#newCustomerModal').modal('show');
+            }
+        });
+
+        $('#categorySelect').selectize({
+            create: function(input, callback) {
+                // Guarda el callback para usar después
+                this.newCustomerCallback = callback;
+
+                // Abre el modal
+                $('#firstName').val(input); // Puedes pre-rellenar el modal con el input del usuario
+                $('#newCustomerModal').modal('show');
+            }
+        });
+
+        $('#brandSelect').selectize({
             create: function(input, callback) {
                 // Guarda el callback para usar después
                 this.newCustomerCallback = callback;
