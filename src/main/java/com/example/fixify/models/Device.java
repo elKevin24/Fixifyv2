@@ -2,8 +2,6 @@ package com.example.fixify.models;
 
 import com.example.fixify.models.catalogsDevice.Brand;
 import com.example.fixify.models.catalogsDevice.Category;
-import com.example.fixify.models.catalogsDevice.Model;
-import com.example.fixify.models.catalogsDevice.Series;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -34,12 +32,10 @@ public class Device {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "model_id")
-    private Model model;
+    @Column(name = "model")
+    private String model;
 
-    @ManyToOne
-    @JoinColumn(name = "series_id")
-    private Series series;
+    @Column(name = "series")
+    private String series;
 
 }

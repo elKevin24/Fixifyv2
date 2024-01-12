@@ -2,6 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Tickets</title>
     <nav th:replace="~{fragments/site :: site-head}"></nav>
 <!--    <div th:replace="~{fragments/site :: site-nav}"></div>-->
@@ -32,39 +33,7 @@
 <main class="mt-3 mb-5 content container">
     <section>
         <!-- Modal para agregar nuevo cliente -->
-        <!-- Modal para agregar nuevo cliente -->
-        <div class="modal fade" id="newCustomerModal" tabindex="-1" role="dialog" aria-labelledby="newCustomerModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="newCustomerModalLabel">Nuevo Cliente</h5>
-                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="newCustomerForm">
-                            <div class="mb-3">
-                                <label for="firstName">Nombre:</label>
-                                <input type="text" id="firstName" name="firstName" class="form-control" required />
-                            </div>
-                            <div class="mb-3">
-                                <label for="lastName">Apellido:</label>
-                                <input type="text" id="lastName" name="lastName" class="form-control" required />
-                            </div>
-                            <div class="mb-3">
-                                <label for="phone">Cel:</label>
-                                <input type="text" id="phone" name="phone" class="form-control" required />
-                            </div>
-                            <div class="mb-3">
-                                <label for="email">Correo:</label>
-                                <input type="text" id="email" name="email" class="form-control" required />
-                            </div>
-                            <!-- Agrega campos para lastName, email, address, phone, etc. -->
-                            <button type="button" class="btn btn-secondary" onclick="addNewCustomer()">Guardar Cliente</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
         <div class="container py-5">
             <div class="card">
@@ -78,32 +47,51 @@
                     <form  th:object="${ticket}" id="create">
                         <h3>Detalles del Cliente</h3>
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-10 mb-3 ">
                                 <label for="customerSelect">Cliente:</label>
                                 <select  id="customerSelect" name="customerId" required th:field="${ticket.customer}">
                                     <option value="">Seleccione un cliente</option>
                                     <option th:each="customer : ${customers}" th:value="${customer.id}" th:text="${customer.firstName} + ' ' + ${customer.lastName}"></option>
                                 </select>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newCustomerModal">Nuevo Cliente</button>
+
+                                </div>
+                            <div class="col-md-2 mb-3 mt-3"><button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#newCustomerModal">Nuevo Cliente</button>
                             </div>
+
                         </div>
 
                         <h3>Detalles del Dispositivo</h3>
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <!-- Selector para DeviceCategory -->
                                 <label for="categorySelect">Categoría:</label>
-                                <select id="categorySelect" name="category" required>
+                                <select id="categorySelect" name="category" th:field="${ticket.device.category}" required>
                                     <option value="">Seleccione una Categoria</option>
                                     <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
                                 </select>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <label for="brandSelect">Marca:</label>
-                                <select id="brandSelect" name="brand" required>
+                                <select id="brandSelect" name="brand" required th:field="${ticket.device.brand}">
                                     <option value="">Seleccione una Marca</option>
                                     <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>
                                 </select>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <!-- Selector para DeviceCategory -->
+                                <label for="modelo">Modelo:</label>
+                                <input type="text" class="form-control" id="modelo" th:field="*{device.model}"
+                                       required/>
+
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <!-- Selector para DeviceCategory -->
+                                <label for="serie">Serie:</label>
+                                <input type="text" class="form-control" id="serie" th:field="*{device.series}"
+                                       required/>
+
                             </div>
 
                         </div>
@@ -207,7 +195,7 @@
         });
     });
 
-    /*<![CDATA[*/
+
     document.addEventListener('DOMContentLoaded', function () {
         $('#customerSelect').selectize({
             create: function(input, callback) {
@@ -226,8 +214,8 @@
                 this.newCustomerCallback = callback;
 
                 // Abre el modal
-                $('#firstName').val(input); // Puedes pre-rellenar el modal con el input del usuario
-                $('#newCustomerModal').modal('show');
+                $('#categoryName').val(input); // Puedes pre-rellenar el modal con el input del usuario
+                $('#newCategoryModal').modal('show');
             }
         });
 
@@ -237,8 +225,8 @@
                 this.newCustomerCallback = callback;
 
                 // Abre el modal
-                $('#firstName').val(input); // Puedes pre-rellenar el modal con el input del usuario
-                $('#newCustomerModal').modal('show');
+                $('#brandName').val(input); // Puedes pre-rellenar el modal con el input del usuario
+                $('#newBrandModal').modal('show');
             }
         });
 
@@ -289,8 +277,82 @@
         });
     }
 
-    /*]]>*/
+
 </script>
+<div class="modal fade" id="newCustomerModal" tabindex="-1" role="dialog" aria-labelledby="newCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newCustomerModalLabel">Nuevo Cliente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newCustomerForm">
+                    <div class="mb-3">
+                        <label for="firstName">Nombre:</label>
+                        <input type="text" id="firstName" name="firstName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastName">Apellido:</label>
+                        <input type="text" id="lastName" name="lastName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone">Cel:</label>
+                        <input type="text" id="phone" name="phone" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="email">Correo:</label>
+                        <input type="text" id="email" name="email" class="form-control" required />
+                    </div>
+                    <!-- Agrega campos para lastName, email, address, phone, etc. -->
+                    <button type="button" class="btn btn-secondary" onclick="addNewCustomer()">Guardar Cliente</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newBrandModal" tabindex="-1" role="dialog" aria-labelledby="newBrandModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newBrandModalLabel">Nueva Marca</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newBrandForm">
+                    <div class="mb-3">
+                        <label for="brandName">Nombre de la Marca:</label>
+                        <input type="text" id="brandName" name="brandName" class="form-control" required />
+                    </div>
+                    <!-- Agrega más campos si es necesario -->
+                    <button type="button" class="btn btn-secondary" onclick="addNewBrand()">Guardar Marca</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newCategoryModal" tabindex="-1" role="dialog" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newCategoryModalLabel">Nueva Categoría</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newCategoryForm">
+                    <div class="mb-3">
+                        <label for="categoryName">Nombre de la Categoría:</label>
+                        <input type="text" id="categoryName" name="categoryName" class="form-control" required />
+                    </div>
+                    <!-- Agrega más campos si es necesario -->
+                    <button type="button" class="btn btn-secondary" onclick="addNewCategory()">Guardar Categoría</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

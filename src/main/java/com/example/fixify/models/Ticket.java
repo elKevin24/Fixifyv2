@@ -35,7 +35,7 @@ public class Ticket {
     @JoinColumn(name = "technician_id")
     private Technician technician;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "device_id")
     private Device device;
 

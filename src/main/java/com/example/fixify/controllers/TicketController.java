@@ -61,7 +61,7 @@ public class TicketController {
             System.out.println("ticket = " + ticket);
 
             // Lógica para guardar el ticket
-//            ticketService.saveTicket(ticket);
+            ticketService.saveTicket(ticket);
             // Lógica de guardado del ticket
 
             return ResponseEntity.ok(Map.of("message", "Ticket creado con éxito"));
