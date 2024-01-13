@@ -11,8 +11,7 @@ public class Brand {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)  // Agregando restricción de clave única aquí
     private String name;
 
-    // Constructores, getters y setters
 }

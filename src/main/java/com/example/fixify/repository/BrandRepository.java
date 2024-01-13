@@ -1,4 +1,7 @@
 package com.example.fixify.repository;
 
-public interface BrandRepository extends org.springframework.data.jpa.repository.JpaRepository<com.example.fixify.models.catalogsDevice.Brand, java.lang.Long> {
+import com.example.fixify.models.catalogsDevice.Brand;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BrandRepository extends JpaRepository<Brand, Long> {
 }
