@@ -1,5 +1,25 @@
 $(document).ready( function () {
-    $('#myTable').DataTable({
-        "order": [[ 0, "desc" ]]
+    $('#create').submit(function (event) {
+        event.preventDefault();
+
+        let formData = $(this).serialize(); // Serializa los datos del formulario
+
+        $.ajax({
+            url: '/fixify/tickets', // URL del controlador
+            type: 'POST',
+            data: formData,
+            beforeSend: function (xhr) {
+                // Incluye el token CSRF en la cabecera de la solicitud
+                xhr.setRequestHeader("X-CSRF-TOKEN", $("meta[name='_csrf']").attr("content"));
+            },
+            success: function (response) {
+                // Manejar la respuesta exitosa
+                alert('Ticket creado con éxito!');
+            },
+            error: function (xhr, status, error) {
+                // Manejar errores
+                alert('Error al crear el ticket: ' + xhr.responseText);
+            }
+        });
     });
-} );
+});
