@@ -4,8 +4,6 @@ package com.example.fixify.controllers;
 import com.example.fixify.models.Customer;
 import com.example.fixify.models.Device;
 import com.example.fixify.models.Ticket;
-import com.example.fixify.models.catalogsDevice.Brand;
-import com.example.fixify.models.catalogsDevice.Category;
 import com.example.fixify.service.CustomerService;
 import com.example.fixify.service.DeviceService;
 import com.example.fixify.service.TicketService;
@@ -21,13 +19,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
+
 import java.util.Map;
 
 @Controller
 @RequestMapping("/tickets")
 public class TicketController {
-    private static final Logger log = LoggerFactory.getLogger(TicketController.class);
+    private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
 
 
     private final TicketService ticketService;
@@ -44,7 +42,7 @@ public class TicketController {
 
     @GetMapping
     public String listTickets(Model model) {
-        model.addAttribute("tickets", ticketService.findAllTickets());
+//        model.addAttribute("tickets", ticketService.findAllTickets());
         model.addAttribute("customers", customerService.findAllCustomer());
         model.addAttribute("ticket", new Ticket());
         model.addAttribute("customer", new Customer()); // Agregar objeto Customer
@@ -58,14 +56,16 @@ public class TicketController {
     @PostMapping
     public ResponseEntity<?> addTicket(@ModelAttribute("ticket") Ticket ticket) {
         try {
-            System.out.println("ticket = " + ticket);
 
-            // Lógica para guardar el ticket
-            ticketService.saveTicket(ticket);
-            // Lógica de guardado del ticket
 
-            return ResponseEntity.ok(Map.of("message", "Ticket creado con éxito"));
+            Ticket savedTicket = ticketService.saveTicket(ticket);
+            logger.info("Ticket creado con éxito: {}", savedTicket);
+
+            return ResponseEntity.ok(Map.of("message", "Ticket creado con éxito", "id", savedTicket.getId()));
+
         } catch (Exception e) {
+            logger.error("Error al crear el ticket: {}", e.getMessage(), e);
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));
         }

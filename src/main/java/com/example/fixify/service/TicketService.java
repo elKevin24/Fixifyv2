@@ -2,12 +2,12 @@ package com.example.fixify.service;
 
 
 import com.example.fixify.models.Ticket;
+import com.example.fixify.models.TicketStatus;
 import com.example.fixify.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class TicketService {
@@ -35,8 +35,10 @@ public class TicketService {
         return ticketRepository.findById(id);
     }
 
+    public List<Object[]> countTicketsByStatus() {
+        Set<Long> statusIds = new HashSet<>(Arrays.asList(1L, 2L, 5L, 7L));
+        List<Object[]> results = ticketRepository.countTicketsBySpecificStatusIds(statusIds);
 
-
-
-    // Aquí podrías agregar más métodos si necesitas realizar otras operaciones
+        return results;
+    }
 }

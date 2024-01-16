@@ -6,7 +6,7 @@
     <title>Tickets</title>
     <nav th:replace="~{fragments/site :: site-head}"></nav>
     <!--    <div th:replace="~{fragments/site :: site-nav}"></div>-->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css"/>
+<!--    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css"/>-->
     <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/css/selectize.default.min.css"
@@ -99,7 +99,7 @@
                                     <!-- Selector para DeviceCategory -->
                                     <label for="serie">Serie:</label>
                                     <input type="text" class="form-control" id="serie" th:field="*{device.series}"
-                                           required/>
+                                           />
 
                                 </div>
 
@@ -108,7 +108,7 @@
                             <div class="mb-3">
                                 <label for="description" class="form-label">Descripción Problema:</label>
                                 <input type="text" class="form-control" id="description" th:field="*{description}"
-                                       required/>
+                                       />
                             </div>
 
 
@@ -249,9 +249,7 @@
         crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossOrigin="anonymous"></script>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
-      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+<!--<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>-->
 
 <script
         src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"
@@ -261,8 +259,5 @@
 ></script>
 <script src="js/ticketForm.js"></script>
 <script src="js/ticketSelectize.js"></script>
-<script th:inline="javascript">
-
-</script>
 </body>
 </html>

@@ -13,8 +13,9 @@ $(document).ready( function () {
                 xhr.setRequestHeader("X-CSRF-TOKEN", $("meta[name='_csrf']").attr("content"));
             },
             success: function (response) {
+                console.log(response);
                 // Manejar la respuesta exitosa
-                alert('Ticket creado con éxito!');
+                alert(response.message +  " Ticket: " + response.id);
             },
             error: function (xhr, status, error) {
                 // Manejar errores
