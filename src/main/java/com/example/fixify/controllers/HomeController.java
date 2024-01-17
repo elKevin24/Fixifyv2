@@ -30,6 +30,7 @@ public class HomeController {
 
         model.addAttribute("ticketCounts", countList);
         model.addAttribute("colors", colors);
+        model.addAttribute("tickets", ticketService.findAllTickets());
         return "index";
     }
 
