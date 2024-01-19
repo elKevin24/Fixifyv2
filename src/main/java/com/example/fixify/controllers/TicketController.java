@@ -14,10 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.util.Map;
@@ -68,6 +65,21 @@ public class TicketController {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarTicket(@PathVariable Long id) {
+        System.out.println("id = " + id);
+        try {
+            // Se envía cero porque es el estado eliminado
+            Long estado = 0L;
+            ticketService.cambiarEstadoTicket(id, estado);
+            return ResponseEntity.ok().build(); // Retornar éxito
+        } catch (Exception e) {
+            // Manejar la excepción y retornar un error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al cambiar el estado del ticket: " + e.getMessage());
         }
     }
 }

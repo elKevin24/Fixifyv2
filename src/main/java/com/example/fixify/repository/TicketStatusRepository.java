@@ -1,4 +1,7 @@
 package com.example.fixify.repository;
 
-public interface TicketStatusRepository extends org.springframework.data.jpa.repository.JpaRepository<com.example.fixify.models.TicketStatus, java.lang.Long> {
+import com.example.fixify.models.TicketStatus;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TicketStatusRepository extends JpaRepository<TicketStatus, Long> {
 }

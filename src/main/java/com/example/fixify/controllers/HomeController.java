@@ -1,20 +1,16 @@
 package com.example.fixify.controllers;
 
-import com.example.fixify.models.TicketStatus;
 import com.example.fixify.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 @Controller
 public class HomeController {
-    private TicketService ticketService;
+    private final TicketService ticketService;
 
     @Autowired
     public HomeController(TicketService ticketService) {
@@ -30,7 +26,7 @@ public class HomeController {
 
         model.addAttribute("ticketCounts", countList);
         model.addAttribute("colors", colors);
-        model.addAttribute("tickets", ticketService.findAllTickets());
+        model.addAttribute("tickets", ticketService.findAllActiveTickets());
         return "index";
     }
 

@@ -4,6 +4,8 @@ package com.example.fixify.service;
 import com.example.fixify.models.Ticket;
 import com.example.fixify.models.TicketStatus;
 import com.example.fixify.repository.TicketRepository;
+import com.example.fixify.repository.TicketStatusRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,18 +15,27 @@ import java.util.*;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
-
+    private final TicketStatusRepository ticketStatusRepository;
 
 
     @Autowired
-    public TicketService(TicketRepository ticketRepository) {
+    public TicketService(TicketRepository ticketRepository, TicketStatusRepository ticketStatusRepository) {
         this.ticketRepository = ticketRepository;
+        this.ticketStatusRepository = ticketStatusRepository;
     }
 
     public List<Ticket> findAllTickets() {
 
         return ticketRepository.findAll();
     }
+
+    public List<Ticket> findAllActiveTickets() {
+        TicketStatus status = ticketStatusRepository.findById(0L)
+                .orElseThrow(() -> new EntityNotFoundException("Estado de Ticket no encontrado con ID: " + 0L));
+        // Filtra los tickets por estado diferente de cero
+        return ticketRepository.findAllByStatusIsNot(status);
+    }
+
 
     public Ticket saveTicket(Ticket ticket) {
         // Aquí podrías agregar lógica antes de guardar el ticket
@@ -37,8 +48,23 @@ public class TicketService {
 
     public List<Object[]> countTicketsByStatus() {
         Set<Long> statusIds = new HashSet<>(Arrays.asList(1L, 2L, 5L, 7L));
-        List<Object[]> results = ticketRepository.countTicketsBySpecificStatusIds(statusIds);
 
-        return results;
+        return ticketRepository.countTicketsBySpecificStatusIds(statusIds);
+    }
+
+    public void cambiarEstadoTicket(Long ticketId, Long statusId) {
+        // Buscar el ticket
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con ID: " + ticketId));
+
+        // Buscar el estado del ticket
+        TicketStatus nuevoEstado = ticketStatusRepository.findById(statusId)
+                .orElseThrow(() -> new EntityNotFoundException("Estado de Ticket no encontrado con ID: " + statusId));
+
+        // Actualizar el estado del ticket
+        ticket.setStatus(nuevoEstado);
+
+        // Guardar el ticket actualizado
+        ticketRepository.save(ticket);
     }
 }
