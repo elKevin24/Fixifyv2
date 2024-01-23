@@ -1,10 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Detalles del Ticket</title>
+    <div th:replace="~{fragments/site :: site-head}"></div>
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
 </head>
 <body>
-$END$
+<nav th:replace="~{fragments/site :: site-nav}"></nav>
+<div class="flex-container">
+
+    <main class="mt-5 pt-4 content container">
+        <section>
+
+            <div class="card">
+                <div class="card-header">
+                    Detalles del Ticket
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Ticket #<span th:text="${ticket.id}">123</span></h5>
+                    <p class="card-text"><strong>Descripción:</strong> <span th:text="${ticket.description}">Descripción del Ticket</span></p>
+                    <p class="card-text"><strong>Estado:</strong> <span th:text="${ticket.status.name}">Nuevo</span></p>
+
+                    <!-- Detalles del Cliente -->
+                    <h6>Detalles del Cliente</h6>
+                    <p class="card-text"><strong>Nombre:</strong> <span th:text="${ticket.customer.firstName}">Nombre del Cliente</span></p>
+
+                    <!-- Detalles del Técnico -->
+                    <h6>Detalles del Técnico</h6>
+                    <p class="card-text"><strong>Nombre:</strong> <span th:text="${ticket.technician?.firstName}">Nombre del Técnico</span></p>
+
+                    <!-- Detalles del Dispositivo -->
+                    <h6>Detalles del Dispositivo</h6>
+                    <p class="card-text"><strong>Dispositivo:</strong> <span th:text="${ticket.device?.brand?.name}">Nombre del Dispositivo</span></p>
+                    <p class="card-text"><strong>Dispositivo:</strong> <span th:text="${ticket.device?.category.name}">Nombre del Dispositivo</span></p>
+                    <p class="card-text"><strong>Dispositivo:</strong> <span th:text="${ticket.device.model}">Nombre del Dispositivo</span></p>
+                    <p class="card-text"><strong>Dispositivo:</strong> <span th:text="${ticket.device.series}">Nombre del Dispositivo</span></p>
+
+                    <!-- Fecha de Creación -->
+                    <p class="card-text"><strong>Fecha de Creación:</strong> <span th:text="${ticket.creationDate}">24/01/2024</span></p>
+
+                </div>
+                <div class="card-footer text-muted">
+                    <a href="#" class="btn btn-primary">Volver a la Lista</a>
+                </div>
+                </div>
+
+        </section>
+    </main>
+
+</div>
+
+<footer th:replace="~{fragments/site :: site-footer}"></footer>
+
 </body>
 </html>

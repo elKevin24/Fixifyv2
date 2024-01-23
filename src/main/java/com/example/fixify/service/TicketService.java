@@ -24,6 +24,10 @@ public class TicketService {
         this.ticketStatusRepository = ticketStatusRepository;
     }
 
+    public Optional<Ticket> findOneById(Long id) {
+        return ticketRepository.findById(id);
+    }
+
     public List<Ticket> findAllTickets() {
 
         return ticketRepository.findAll();

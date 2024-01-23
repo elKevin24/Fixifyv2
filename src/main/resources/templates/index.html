@@ -72,8 +72,8 @@
                                 </a>
 
                                 <ul class="dropdown-menu" style="">
-                                    <li><a class="dropdown-item text-green" href="#">Ver</a></li>
-                                    <li><a class="dropdown-item text-yellow" href="#">Editar</a></li>
+                                    <li><a class="dropdown-item text-green" th:href="@{/tickets/{id}(id=${ticket?.id})}">Ver</a></li>
+                                    <li><a class="dropdown-item text-yellow" th:href="@{/tickets/{id}(id=${ticket?.id})}">Editar</a></li>
                                     <li><a class="dropdown-item text-red delete-ticket"  th:attr="data-id=${ticket?.id}">Elimnar</a></li>
                                 </ul>
                             </div>

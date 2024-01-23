@@ -58,3 +58,17 @@ function filterTable(buttonElement) {
     table.search(index).draw();
 }
 
+function fetchTicketById(ticketId) {
+    $.ajax({
+        url: '/tickets/' + ticketId, // Asegúrate de que la URL coincida con tu configuración de servidor
+        type: 'GET',
+        success: function(ticket) {
+            console.log('Ticket encontrado:', ticket);
+            // Aquí puedes actualizar la UI con los detalles del ticket
+        },
+        error: function(error) {
+            console.error('Error al buscar el ticket:', error);
+            // Manejo de errores (por ejemplo, mostrar un mensaje al usuario)
+        }
+    });
+}

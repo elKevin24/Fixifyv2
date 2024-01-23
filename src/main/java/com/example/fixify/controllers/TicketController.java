@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/tickets")
@@ -66,6 +67,14 @@ public class TicketController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @GetMapping("/{id}")
+    public String getTicketById(@PathVariable Long id, Model model) {
+        Ticket ticket = ticketService.findOneById(id)
+                .orElseThrow(() -> new NoSuchElementException("Ticket no encontrado con id: " + id));
+        model.addAttribute("ticket", ticket);
+        return "ticketDetails"; // Nombre de la plantilla de Thymeleaf
     }
 
     @DeleteMapping("/{id}")
