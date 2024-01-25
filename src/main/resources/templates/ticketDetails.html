@@ -13,49 +13,60 @@
 <body>
 <nav th:replace="~{fragments/site :: site-nav}"></nav>
 <div class="flex-container">
+    <main class="mt-5 pt-4 container">
+        <section class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-0 shadow">
+                    <div class="card-header bg-dark text-white text-center">
+                        <h4><i class="fa fa-ticket-alt mr-2" ></i>Detalles del Ticket <span th:text="${ticket.id}"></span></h4>
+                    </div>
+                    <div class="card-body">
 
-    <main class="mt-5 pt-4 content container">
-        <section>
+                        <!-- Detalles del Cliente -->
+                        <div class="mb-3">
+                            <h6 class="text-primary">Cliente</h6>
+                            <div class="p-2 bg-light rounded">
+                                <div class="row">
+                                <p class="col"><strong>Nombre:</strong> <span th:text="${ticket.customer.firstName}">Nombre del Cliente</span></p>
+                                <p class="col"><strong>Apellido:</strong> <span th:text="${ticket.customer.lastName}">Apellido del Cliente</span></p>
+                                </div>
+                                </div>
+                        </div>
 
-            <div class="card">
-                <div class="card-header">
-                    Detalles del Ticket
+                        <!-- Detalles del Técnico -->
+
+                        <!-- Detalles del Dispositivo -->
+                        <div class="mb-3">
+                            <h6 class="text-primary">Dispositivo</h6>
+                            <div class="p-2 bg-light rounded row">
+                                <p class="col"><strong>Marca:</strong> <span th:text="${ticket.device?.brand?.name}">Marca del Dispositivo</span></p>
+                                <p class="col"><strong>Categoría:</strong> <span th:text="${ticket.device?.category.name}">Categoría del Dispositivo</span></p>
+                                <p class="col"><strong>Modelo:</strong> <span th:text="${ticket.device.model}">Modelo del Dispositivo</span></p>
+                                <p class="col"><strong>Serie:</strong> <span th:text="${ticket.device.series}">Serie del Dispositivo</span></p>
+                            </div>
+                        </div>
+                        <!-- Información General del Ticket -->
+                        <div class="mb-3">
+                            <h6 class="text-primary">Información General</h6>
+                            <div class="p-2 bg-light rounded">
+                                <p><strong>Descripción:</strong> <span th:text="${ticket.description}">Descripción del Ticket</span></p>
+                                <p><strong>Estado:</strong> <span th:text="${ticket.status.name}" class="badge badge-success-light">Nuevo</span></p>
+                                <p><strong>Fecha de Creación:</strong> <span th:text="${ticket.creationDate}">24/01/2024</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-dark text-center">
+                        <a th:href="@{/tickets/index}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Volver a la Lista</a>
+                        <a class="btn btn-primary" th:href="@{/tickets/ticketPdf/{id}(id=${ticket?.id})}">Ver</a>
+
+
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title">Ticket #<span th:text="${ticket.id}">123</span></h5>
-                    <p class="card-text"><strong>Descripción:</strong> <span th:text="${ticket.description}">Descripción del Ticket</span></p>
-                    <p class="card-text"><strong>Estado:</strong> <span th:text="${ticket.status.name}">Nuevo</span></p>
-
-                    <!-- Detalles del Cliente -->
-                    <h6>Detalles del Cliente</h6>
-                    <p class="card-text"><strong>Nombre:</strong> <span th:text="${ticket.customer.firstName}">Nombre del Cliente</span></p>
-
-                    <!-- Detalles del Técnico -->
-                    <h6>Detalles del Técnico</h6>
-                    <p class="card-text"><strong>Nombre:</strong> <span th:text="${ticket.technician?.firstName}">Nombre del Técnico</span></p>
-
-                    <!-- Detalles del Dispositivo -->
-                    <h6>Detalles del Dispositivo</h6>
-                    <p class="card-text"><strong>Dispositivo:</strong> <span th:text="${ticket.device?.brand?.name}">Nombre del Dispositivo</span></p>
-                    <p class="card-text"><strong>Dispositivo:</strong> <span th:text="${ticket.device?.category.name}">Nombre del Dispositivo</span></p>
-                    <p class="card-text"><strong>Dispositivo:</strong> <span th:text="${ticket.device.model}">Nombre del Dispositivo</span></p>
-                    <p class="card-text"><strong>Dispositivo:</strong> <span th:text="${ticket.device.series}">Nombre del Dispositivo</span></p>
-
-                    <!-- Fecha de Creación -->
-                    <p class="card-text"><strong>Fecha de Creación:</strong> <span th:text="${ticket.creationDate}">24/01/2024</span></p>
-
-                </div>
-                <div class="card-footer text-muted">
-                    <a href="#" class="btn btn-primary">Volver a la Lista</a>
-                </div>
-                </div>
-
+            </div>
         </section>
     </main>
-
 </div>
-
+<div class="mb-5 pb-5"></div>
 <footer th:replace="~{fragments/site :: site-footer}"></footer>
-
 </body>
 </html>

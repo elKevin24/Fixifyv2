@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Detale de ticket</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            /* background-color: #f5f5f5; */
+        }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            
+        }
+        .card-header {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 5px 5px 0 0;
+            font-size: 1.4em;
+            font-weight: bold;
+            text-align: center;
+        }
+        .card-body {
+            padding: 10px 15px;
+            background-color: #fff; /* Agregamos un fondo sombreado */
+        }
+        .section-title {
+            color: #007bff;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 0.75em;
+        }
+        .section {
+            background-color: #f7f7f7;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            padding: 1px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .col {
+            flex: 1;
+            padding: 10px;
+            margin-right: 10px;
+        }
+        .col:last-child {
+            margin-right: 0;
+        }
+        .badge {
+            padding: 0.25em 0.6em;
+            background-color: #c8e6c9;
+            border-radius: 4px;
+            color: #155724;
+            font-size: 0.9em;
+        }
+        /* Eliminamos los estilos de los botones ya que no son necesarios */
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            Detalles del Ticket <span th:text="${ticket.id}">144</span>
+        </div>
+        <div class="card-body">
+            <!-- Cliente -->
+            <div class="section-title">Cliente</div>
+            <div class="section">
+                
+                <div class="row">
+                    <p class="col">Nombre: <span th:text="${ticket.customer.firstName}">Marti</span></p>
+                    <p class="col">Apellido: <span th:text="${ticket.customer.lastName}">Curtiss</span></p>
+                </div>
+            </div>
+            <div class="section-title">Dispositivo</div>
+            <!-- Dispositivo -->
+            <div class="section">
+                
+                <div class="row">
+                    <p class="col">Marca: <span th:text="${ticket.device?.brand?.name}">Aoc</span></p>
+                    <p class="col">Categoría: <span th:text="${ticket.device?.category.name}">Smartphone</span></p>
+                    <p class="col">Modelo: <span th:text="${ticket.device.model}">2222</span></p>
+                    <p class="col">Serie: <span th:text="${ticket.device.series}"></span></p>
+                </div>
+            </div>
+            <div class="section-title">Información General</div>
+            <!-- Información General -->
+            <div class="section">
+                
+                <p>Descripción: <span th:text="${ticket.description}">este es un ticket de prueba</span></p>
+                <p>Estado: <span th:text="${ticket.status.name}" class="badge">Creado</span></p>
+                <p>Fecha de Creación: <span th:text="${ticket.creationDate}">2024-01-15T21:28:36.700244</span></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

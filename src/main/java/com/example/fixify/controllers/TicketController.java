@@ -6,17 +6,24 @@ import com.example.fixify.models.Device;
 import com.example.fixify.models.Ticket;
 import com.example.fixify.service.CustomerService;
 import com.example.fixify.service.DeviceService;
+import com.example.fixify.service.PdfGenerationService;
 import com.example.fixify.service.TicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 
+import java.io.ByteArrayInputStream;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -30,12 +37,38 @@ public class TicketController {
     private final CustomerService customerService;
     private final DeviceService deviceService;
 
+    @Autowired
+    private TemplateEngine templateEngine;
+
+    @Autowired
+    private PdfGenerationService pdfGenerationService;
 
     @Autowired
     public TicketController(TicketService ticketService, CustomerService customerService, DeviceService deviceService) {
         this.ticketService = ticketService;
         this.customerService = customerService;
         this.deviceService = deviceService;
+    }
+
+    @GetMapping("/ticketPdf/{ticketId}")
+    public ResponseEntity<InputStreamResource> generatePdf(@PathVariable Long ticketId) {
+        Ticket ticket = ticketService.findOneById(ticketId)
+                .orElseThrow(() -> new NoSuchElementException("Ticket no encontrado con id: " + ticketId));
+
+        Context context = new Context();
+        context.setVariable("ticket", ticket);
+
+        String html = templateEngine.process("ticketDetailsPdf", context);
+        ByteArrayInputStream bis = pdfGenerationService.generatePdfFromHtml(html);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=ticket-" + ticketId + ".pdf");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(bis));
     }
 
     @GetMapping

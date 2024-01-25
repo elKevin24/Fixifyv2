@@ -14658,7 +14658,7 @@ a {
 
 .card-header {
   position: relative;
-  padding: 2rem 2rem;
+  /*padding: 2rem 2rem;*/
   border-bottom: none;
   background-color: white;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
