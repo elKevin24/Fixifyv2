@@ -57,9 +57,7 @@
                     </div>
                     <div class="card-footer bg-dark text-center">
                         <a th:href="@{/tickets/index}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Volver a la Lista</a>
-                        <a class="btn btn-primary" th:href="@{/tickets/ticketPdf/{id}(id=${ticket?.id})}">Ver</a>
-
-
+                        <a class="btn btn-primary" th:href="@{/tickets/ticketPdf/{id}(id=${ticket?.id})}" target="_blank">PDF</a>
                     </div>
                 </div>
             </div>
