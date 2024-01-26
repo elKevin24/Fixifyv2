@@ -8,14 +8,13 @@
 
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-
 </head>
 <body>
 <nav th:replace="~{fragments/site :: site-nav}"></nav>
 <div class="flex-container">
     <main class="mt-5 pt-4 container">
         <section class="row">
-            <div class="col-lg-8 mx-auto">
+            <div class="col-lg-6 mx-auto">
                 <div class="card border-0 shadow">
                     <div class="card-header bg-dark text-white text-center">
                         <h4><i class="fa fa-ticket-alt mr-2" ></i>Detalles del Ticket <span th:text="${ticket.id}"></span></h4>
@@ -61,10 +60,42 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Nueva card con formulario, visible solo si el estado es 1 -->
+            <div class="col-lg-6 mx-auto" th:if="${ticket.status.id} == '1'">
+                <div class="card border-0 shadow">
+                    <div class="card-header bg-dark text-white text-center">
+                        <h4><i class="fa fa-edit mr-2"></i> Actualizar Ticket</h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/tickets/update/{id}(id=${ticket.id})}" th:object="${ticket}" method="post">
+                            <!-- Campos del formulario -->
+                            <!-- Ejemplo: Campo para añadir diagnóstico técnico -->
+                            <div class="form-group">
+                                <label for="technicalReview"><h6 class="text-primary">Diagnóstico Técnico:</h6></label>
+                                <textarea id="technicalReview" th:field="*{technicalReview}" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div id="servicios-container">
+                                <h6 class="text-primary">Servicios:</h6>
+                               
+                            </div>
+                            <button type="button" onclick="addService()">Añadir Servicio</button>
+
+
+                            <!-- Otros campos del formulario según sea necesario -->
+                            <button type="submit" class="btn btn-primary mt-3">Enviar Actualización</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 </div>
 <div class="mb-5 pb-5"></div>
 <footer th:replace="~{fragments/site :: site-footer}"></footer>
+
+<!--<script src="js/ticketDetail.js"></script>-->
+<script th:src="@{/js/ticketDetail.js}"></script>
+
 </body>
 </html>

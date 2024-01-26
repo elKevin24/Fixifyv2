@@ -5,14 +5,13 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+@ToString
 @Data
 @NoArgsConstructor
 @DynamicInsert
-@Getter
-@Setter
 @Entity
-@ToString
 @Table(name = "tickets")
 public class Ticket {
 
@@ -22,6 +21,9 @@ public class Ticket {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "technical_review")
+    private String technicalReview; // Descripción del resultado de la revisión técnica
 
     @ManyToOne
     @JoinColumn(name = "status_id")
@@ -41,4 +43,7 @@ public class Ticket {
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
+
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ServicesTicket> servicios;
 }
