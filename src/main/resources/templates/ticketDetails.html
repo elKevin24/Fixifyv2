@@ -68,19 +68,22 @@
                         <h4><i class="fa fa-edit mr-2"></i> Actualizar Ticket</h4>
                     </div>
                     <div class="card-body">
-                        <form th:action="@{/tickets/update/{id}(id=${ticket.id})}" th:object="${ticket}" method="post">
-                            <!-- Campos del formulario -->
-                            <!-- Ejemplo: Campo para añadir diagnóstico técnico -->
-                            <div class="form-group">
-                                <label for="technicalReview"><h6 class="text-primary">Diagnóstico Técnico:</h6></label>
-                                <textarea id="technicalReview" th:field="*{technicalReview}" class="form-control" rows="3"></textarea>
-                            </div>
-                            <div id="servicios-container">
-                                <h6 class="text-primary">Servicios:</h6>
-                               
-                            </div>
-                            <button type="button" onclick="addService()">Añadir Servicio</button>
+                        <form id="ticketForm" th:object="${ticket}">
+                            <input type="hidden" name="ticketId" th:value="${ticket.id}" />
 
+                            <div class="form-group">
+                                <label for="technicalReview"><h5 class="text-primary">Diagnóstico Técnico:</h5></label>
+
+                                <textarea id="technicalReview"
+                                          th:field="*{technicalReview}"
+                                          class="form-control"
+                                          rows="3"></textarea>
+                            </div>
+<!--                            <div id="servicios-container">-->
+<!--                                <h6 class="text-primary">Servicios:</h6>-->
+<!--                               -->
+<!--                            </div>-->
+<!--                            <button type="button" class="btn btn-warning mt-3" onclick="addService()">Añadir Servicio</button>-->
 
                             <!-- Otros campos del formulario según sea necesario -->
                             <button type="submit" class="btn btn-primary mt-3">Enviar Actualización</button>
@@ -93,9 +96,7 @@
 </div>
 <div class="mb-5 pb-5"></div>
 <footer th:replace="~{fragments/site :: site-footer}"></footer>
-
-<!--<script src="js/ticketDetail.js"></script>-->
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
 <script th:src="@{/js/ticketDetail.js}"></script>
-
 </body>
 </html>

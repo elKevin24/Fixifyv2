@@ -46,4 +46,11 @@ public class Ticket {
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServicesTicket> servicios;
+
+    @ManyToOne
+    private Usuario createdBy;
+
+    @ManyToOne
+    private Usuario updatedBy;
+
 }

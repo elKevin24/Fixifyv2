@@ -4,10 +4,7 @@ package com.example.fixify.controllers;
 import com.example.fixify.models.Customer;
 import com.example.fixify.models.Device;
 import com.example.fixify.models.Ticket;
-import com.example.fixify.service.CustomerService;
-import com.example.fixify.service.DeviceService;
-import com.example.fixify.service.PdfGenerationService;
-import com.example.fixify.service.TicketService;
+import com.example.fixify.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +41,44 @@ public class TicketController {
     private PdfGenerationService pdfGenerationService;
 
     @Autowired
-    public TicketController(TicketService ticketService, CustomerService customerService, DeviceService deviceService) {
+    private UsuarioService userService;
+
+    @Autowired
+    public TicketController(TicketService ticketService, CustomerService customerService, DeviceService deviceService, UsuarioService userService) {
         this.ticketService = ticketService;
         this.customerService = customerService;
         this.deviceService = deviceService;
+        this.userService = userService;
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Long> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
+        // Obtener el ticket existente
+        System.out.println("id = " + id);
+        System.out.println("id = " + ticket);
+
+//        System.out.println("ticket = " + ticket);
+//        Optional<Ticket> existingTicketOptional  = ticketService.findOneById(ticket.getId());
+//        if (!existingTicketOptional.isPresent()) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        Ticket existingTicket = existingTicketOptional.get();
+//
+//        // Obtener el usuario actual
+//        String username = principal.getName();
+//        UserDetails currentUser = userService.loadUserByUsername(username);
+//
+//
+//        // Actualiza los campos de existingTicket con los de ticketDetails
+//        existingTicket.setTechnicalReview(ticket.getTechnicalReview());
+//        // ... otros campos según sea necesario ...
+//        existingTicket.setUpdatedBy((Usuario) currentUser);
+//
+//        // Guardar el ticket actualizado
+//        Ticket updatedTicket = ticketService.saveTicket(existingTicket);
+
+        return ResponseEntity.ok(id); // Devuelve el ticket actualizado
+        // o devolver el ticket actualizado si es necesario
     }
 
     @GetMapping("/ticketPdf/{ticketId}")
