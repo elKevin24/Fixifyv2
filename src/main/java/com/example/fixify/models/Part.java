@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @Data
 @DynamicInsert
 @Entity
+@Table(name = "part")
 public class Part {
 
     @Id
