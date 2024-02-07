@@ -44,6 +44,8 @@ public class Ticket {
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
+
+
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServicesTicket> servicios;
 

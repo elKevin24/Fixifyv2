@@ -1,23 +1,37 @@
 $(document).ready( function() {
     $("#ticketForm").submit(function(event) {
         event.preventDefault();
-        const Data = $(this).serialize();
-        console.log(Data);
-        console.log(JSON.stringify(Data));
-        let ticketId = $("input[name='ticketId']").val();
-        let technicalReview = $("#technicalReview").val(); // Ejemplo de campo del formulario
 
-        const data = {
-            technicalReview: technicalReview
-            // Añade aquí otros campos según sea necesario
-        };
-        console.log(data)
-        console.log(JSON.stringify(data))
+        let formData = new FormData(this);
+        console.log(JSON.stringify(formData));
+        console.log(formData);
+        let dataObj = {};
+
+        for (let [key, value] of formData.entries()) {
+            if (key.startsWith("servicios[")) {
+                let match = key.match(/servicios\[(\d+)\]\.(.+)/);
+                if (match) {
+                    let index = parseInt(match[1]);
+                    let property = match[2];
+                    dataObj.servicios = dataObj.servicios || [];
+                    dataObj.servicios[index] = dataObj.servicios[index] || {};
+                    dataObj.servicios[index][property] = value;
+                }
+            } else {
+                dataObj[key] = value;
+            }
+        }
+
+        // Aquí puedes enviar el dataObj como JSON a tu servidor
+        console.log(JSON.stringify(dataObj));
+
+        let ticketId = $("input[name='id']").val();
+
         $.ajax({
             url: '/fixify/tickets/update/'+ ticketId, // URL del controlador
             type: 'PUT',
             contentType: 'application/json',
-            data: JSON.stringify(data),
+            data: JSON.stringify(dataObj),
             beforeSend: function (xhr) {
                 // Incluye el token CSRF en la cabecera de la solicitud
                 xhr.setRequestHeader("X-CSRF-TOKEN", $("meta[name='_csrf']").attr("content"));
@@ -25,7 +39,7 @@ $(document).ready( function() {
             success: function (response) {
                 console.log(response);
                 // Manejar la respuesta exitosa
-                alert(response.message +  " Ticket: " + response.id);
+                alert("Actualizacion Exitosa");
             },
             error: function (xhr, status, error) {
                 // Manejar errores
@@ -39,6 +53,7 @@ $(document).ready( function() {
 function addService() {
     let container = $("#servicios-container");
     let index = container.children().length;
+    index = index-1
 
     // Crear y añadir el div para la fila
     let divRow = $('<div>', {class: 'row mb-2'}); // mb-2 para un pequeño margen inferior

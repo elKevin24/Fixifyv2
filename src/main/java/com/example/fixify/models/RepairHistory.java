@@ -1,14 +1,15 @@
 package com.example.fixify.models;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
-@Getter
-@Setter
+
+@Data
 @Entity
 @Table(name = "repair_history")
 public class RepairHistory {
@@ -16,9 +17,6 @@ public class RepairHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
-    @Column(name = "cost", precision = 38, scale = 2)
-    private BigDecimal cost;
 
     @Column(name = "description")
     private String description;

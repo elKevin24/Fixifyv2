@@ -1,9 +1,7 @@
 package com.example.fixify.controllers;
 
 
-import com.example.fixify.models.Customer;
-import com.example.fixify.models.Device;
-import com.example.fixify.models.Ticket;
+import com.example.fixify.models.*;
 import com.example.fixify.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +20,10 @@ import org.thymeleaf.context.Context;
 
 
 import java.io.ByteArrayInputStream;
+import java.security.Principal;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/tickets")
@@ -34,14 +35,13 @@ public class TicketController {
     private final CustomerService customerService;
     private final DeviceService deviceService;
 
-    @Autowired
+
     private TemplateEngine templateEngine;
 
-    @Autowired
     private PdfGenerationService pdfGenerationService;
 
-    @Autowired
-    private UsuarioService userService;
+
+    private final UsuarioService userService;
 
     @Autowired
     public TicketController(TicketService ticketService, CustomerService customerService, DeviceService deviceService, UsuarioService userService) {
@@ -52,33 +52,36 @@ public class TicketController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Long> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
+    public ResponseEntity<?> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket, Principal principal) {
         // Obtener el ticket existente
         System.out.println("id = " + id);
-        System.out.println("id = " + ticket);
+        System.out.println("ticket = " + ticket);
+        Optional<Ticket> existingTicketOptional  = ticketService.findOneById(id);
+        if (!existingTicketOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
 
-//        System.out.println("ticket = " + ticket);
-//        Optional<Ticket> existingTicketOptional  = ticketService.findOneById(ticket.getId());
-//        if (!existingTicketOptional.isPresent()) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        Ticket existingTicket = existingTicketOptional.get();
-//
-//        // Obtener el usuario actual
-//        String username = principal.getName();
-//        UserDetails currentUser = userService.loadUserByUsername(username);
-//
-//
-//        // Actualiza los campos de existingTicket con los de ticketDetails
-//        existingTicket.setTechnicalReview(ticket.getTechnicalReview());
-//        // ... otros campos según sea necesario ...
-//        existingTicket.setUpdatedBy((Usuario) currentUser);
-//
-//        // Guardar el ticket actualizado
-//        Ticket updatedTicket = ticketService.saveTicket(existingTicket);
+        Ticket existingTicket = existingTicketOptional.get();
 
-        return ResponseEntity.ok(id); // Devuelve el ticket actualizado
-        // o devolver el ticket actualizado si es necesario
+        String username = principal.getName();
+        UserDetails currentUser = userService.loadUserByUsername(username);
+
+        existingTicket.setTechnicalReview(ticket.getTechnicalReview());
+        existingTicket.setUpdatedBy((Usuario) currentUser);
+
+        for (ServicesTicket servicio : ticket.getServicios()) {
+            // Aquí, cada 'servicio' es un objeto ServicesTicket
+            existingTicket.getServicios().add(servicio);
+            servicio.setTicket(existingTicket); // Si la relación es bidireccional, establece también la relación inversa
+        }
+
+        Ticket updatedTicket = ticketService.saveTicket(existingTicket);
+
+        if (updatedTicket != null) {
+            return ResponseEntity.ok("Actualización exitosa");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la actualización"); // Puedes personalizar el mensaje de error
+        }
     }
 
     @GetMapping("/ticketPdf/{ticketId}")
@@ -116,9 +119,11 @@ public class TicketController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addTicket(@ModelAttribute("ticket") Ticket ticket) {
+    public ResponseEntity<?> addTicket(@ModelAttribute("ticket") Ticket ticket, Principal principal) {
         try {
-
+            String username = principal.getName();
+            UserDetails currentUser = userService.loadUserByUsername(username);
+            ticket.setCreatedBy((Usuario) currentUser);
 
             Ticket savedTicket = ticketService.saveTicket(ticket);
             logger.info("Ticket creado con éxito: {}", savedTicket);
