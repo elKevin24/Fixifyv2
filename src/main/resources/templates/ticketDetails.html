@@ -17,7 +17,8 @@
             <div class="col-lg-6 mx-auto">
                 <div class="card border-0 shadow">
                     <div class="card-header bg-dark text-white text-center">
-                        <h4><i class="fa fa-ticket-alt mr-2" ></i>Detalles del Ticket <span th:text="${ticket.id}"></span></h4>
+                        <h4><i class="fa fa-ticket-alt mr-2"></i>Detalles del Ticket <span
+                                th:text="${ticket.id}"></span></h4>
                     </div>
                     <div class="card-body">
 
@@ -26,37 +27,45 @@
                             <h6 class="text-primary">Cliente</h6>
                             <div class="p-2 bg-light rounded">
                                 <div class="row">
-                                <p class="col"><strong>Nombre:</strong> <span th:text="${ticket.customer.firstName}">Nombre del Cliente</span></p>
-                                <p class="col"><strong>Apellido:</strong> <span th:text="${ticket.customer.lastName}">Apellido del Cliente</span></p>
+                                    <p class="col"><strong>Nombre:</strong> <span
+                                            th:text="${ticket.customer.firstName}">Nombre del Cliente</span></p>
+                                    <p class="col"><strong>Apellido:</strong> <span
+                                            th:text="${ticket.customer.lastName}">Apellido del Cliente</span></p>
                                 </div>
-                                </div>
+                            </div>
                         </div>
 
-                        <!-- Detalles del Técnico -->
-
-                        <!-- Detalles del Dispositivo -->
                         <div class="mb-3">
                             <h6 class="text-primary">Dispositivo</h6>
                             <div class="p-2 bg-light rounded row">
-                                <p class="col"><strong>Marca:</strong> <span th:text="${ticket.device?.brand?.name}">Marca del Dispositivo</span></p>
-                                <p class="col"><strong>Categoría:</strong> <span th:text="${ticket.device?.category.name}">Categoría del Dispositivo</span></p>
-                                <p class="col"><strong>Modelo:</strong> <span th:text="${ticket.device.model}">Modelo del Dispositivo</span></p>
-                                <p class="col"><strong>Serie:</strong> <span th:text="${ticket.device.series}">Serie del Dispositivo</span></p>
+                                <p class="col"><strong>Marca:</strong> <span th:text="${ticket.device?.brand?.name}">Marca del Dispositivo</span>
+                                </p>
+                                <p class="col"><strong>Categoría:</strong> <span
+                                        th:text="${ticket.device?.category.name}">Categoría del Dispositivo</span></p>
+                                <p class="col"><strong>Modelo:</strong> <span th:text="${ticket.device.model}">Modelo del Dispositivo</span>
+                                </p>
+                                <p class="col"><strong>Serie:</strong> <span th:text="${ticket.device.series}">Serie del Dispositivo</span>
+                                </p>
                             </div>
                         </div>
                         <!-- Información General del Ticket -->
                         <div class="mb-3">
                             <h6 class="text-primary">Información General</h6>
                             <div class="p-2 bg-light rounded">
-                                <p><strong>Descripción:</strong> <span th:text="${ticket.description}">Descripción del Ticket</span></p>
-                                <p><strong>Estado:</strong> <span th:text="${ticket.status.name}" class="badge badge-success-light">Nuevo</span></p>
-                                <p><strong>Fecha de Creación:</strong> <span th:text="${ticket.creationDate}">24/01/2024</span></p>
+                                <p><strong>Descripción:</strong> <span th:text="${ticket.description}">Descripción del Ticket</span>
+                                </p>
+                                <p><strong>Estado:</strong> <span th:text="${ticket.status.name}"
+                                                                  class="badge badge-success-light">Nuevo</span></p>
+                                <p><strong>Fecha de Creación:</strong> <span
+                                        th:text="${ticket.creationDate}">24/01/2024</span></p>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer bg-dark text-center">
-                        <a th:href="@{/tickets/index}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Volver a la Lista</a>
-                        <a class="btn btn-primary" th:href="@{/tickets/ticketPdf/{id}(id=${ticket?.id})}" target="_blank">PDF</a>
+                        <a th:href="@{/tickets/index}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Volver a
+                            la Lista</a>
+                        <a class="btn btn-primary" th:href="@{/tickets/ticketPdf/{id}(id=${ticket?.id})}"
+                           target="_blank">PDF</a>
                     </div>
                 </div>
             </div>
@@ -69,7 +78,7 @@
                     </div>
                     <div class="card-body">
                         <form id="ticketForm" th:object="${ticket}">
-                            <input type="hidden" name="id" th:value="${ticket.id}" />
+                            <input type="hidden" name="id" th:value="${ticket.id}"/>
 
                             <div class="form-group">
                                 <label for="technicalReview"><h5 class="text-primary">Diagnóstico Técnico:</h5></label>
@@ -81,14 +90,16 @@
                             </div>
                             <div id="servicios-container">
                                 <h6 class="text-primary">Servicios:</h6>
-                                <input type="text" class="form-control" th:field="*{servicios[0].description}" value="1234"/>
-                                <input type="text" class="form-control" th:field="*{servicios[1].description}" value="1234"/>
                             </div>
-
-
-                            <button type="button" class="btn btn-warning mt-3" onclick="addService()">Añadir Servicio</button>
-                            <!-- Otros campos del formulario según sea necesario -->
-                            <button type="submit" class="btn btn-primary mt-3">Enviar Actualización</button>
+                            <div class="row justify-content-between">
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-warning mt-3" onclick="addService()">Añadir Servicio</button>
+                                    <button type="button" id="deleteServiceButton" class="btn btn-danger mt-3 d-none" onclick="deleteService()">Eliminar Servicio</button>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="submit"  class="btn btn-primary mt-3">Enviar Actualización</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>

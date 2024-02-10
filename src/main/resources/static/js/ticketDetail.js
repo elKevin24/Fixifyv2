@@ -51,14 +51,14 @@ $(document).ready( function() {
 });
 
 function addService() {
+    console.log("Añadiendo servicio"); // Esto debería aparecer en la consola del navegador cuando se ejecute la función
+    $('#deleteServiceButton').removeClass('d-none');
     let container = $("#servicios-container");
     let index = container.children().length;
     index = index-1
 
     // Crear y añadir el div para la fila
     let divRow = $('<div>', {class: 'row mb-2'}); // mb-2 para un pequeño margen inferior
-
-
 
     // Crear y añadir el input para la descripción del servicio
     let divInput = $('<div>', {class: 'col-md-10'}); // col-8 para un ancho más grande
@@ -70,8 +70,6 @@ function addService() {
     }).appendTo(divInput);
 
     divInput.appendTo(divRow);
-
-
 
     // Crear y añadir el botón para añadir partes
     let divButton = $('<div>', {class: 'col-auto'});
@@ -86,12 +84,12 @@ function addService() {
 
     divButton.appendTo(divRow);
 
+
+
+
     // Añadir la fila completa al contenedor
     divRow.appendTo(container);
 }
-
-
-
 
 function addPart(serviceIndex) {
     var partsContainer ;/* Encuentra el contenedor de partes para el servicio específico */;
@@ -107,7 +105,6 @@ function addPart(serviceIndex) {
 function togglePartsField(serviceIndex) {
     // Lógica para mostrar/ocultar el campo de partes basado en si 'esHardware' está marcado
 }
-
 
 function removeService(serviceIndex) {
     var container = document.getElementById('servicios-container');
