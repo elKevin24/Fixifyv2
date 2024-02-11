@@ -51,17 +51,20 @@ $(document).ready( function() {
 });
 
 function addService() {
-    console.log("Añadiendo servicio"); // Esto debería aparecer en la consola del navegador cuando se ejecute la función
-    $('#deleteServiceButton').removeClass('d-none');
+
     let container = $("#servicios-container");
     let index = container.children().length;
+    console.log(index)
     index = index-1
-
+    console.log(index)
     // Crear y añadir el div para la fila
-    let divRow = $('<div>', {class: 'row mb-2'}); // mb-2 para un pequeño margen inferior
+    let divRow = $('<div>', {
+        class: 'row mb-2 align-items-center',
+        id: 'service-' + index
+    }); // mb-2 para un pequeño margen inferior
 
     // Crear y añadir el input para la descripción del servicio
-    let divInput = $('<div>', {class: 'col-md-10'}); // col-8 para un ancho más grande
+    let divInput = $('<div>', {class: 'col-md-9 col-md-9 pe-0'}); // col-8 para un ancho más grande
     $('<input>', {
         type: 'text',
         class: 'form-control',
@@ -72,21 +75,28 @@ function addService() {
     divInput.appendTo(divRow);
 
     // Crear y añadir el botón para añadir partes
-    let divButton = $('<div>', {class: 'col-auto'});
+    let divButtons = $('<div>', {class: 'col-md-3 d-flex justify-content-end ps-0'});
+
     $('<button>', {
         type: 'button',
         html: '&#43;', // Símbolo de "más"
-        class: 'btn btn-success add-part-button',
+        class: 'btn btn-success me-2',
         click: function () {
             addPart(index);
         }
-    }).appendTo(divButton);
-
-    divButton.appendTo(divRow);
+    }).appendTo(divButtons);
 
 
+    $('<button>', {
+        type: 'button',
+        html: '&#45;',
+        class: 'btn btn-danger',
+        click: function () {
+            removeService(index);
+        }
+    }).appendTo(divButtons);
 
-
+    divButtons.appendTo(divRow);
     // Añadir la fila completa al contenedor
     divRow.appendTo(container);
 }
@@ -107,11 +117,17 @@ function togglePartsField(serviceIndex) {
 }
 
 function removeService(serviceIndex) {
-    var container = document.getElementById('servicios-container');
-    var serviceDiv = container.children[serviceIndex];
-    container.removeChild(serviceDiv);
-    // Opcionalmente, podrías querer reorganizar los índices de los servicios restantes.
+    // Eliminar el div del servicio específico
+    $('#service-' + serviceIndex).remove();
+
+    // Opcionalmente, actualizar la visibilidad del botón de eliminar servicio
+    let container = $("#servicios-container");
+    if (container.children().length === 0) {
+        // Si no hay más servicios, ocultar el botón de eliminar
+        $('#deleteServiceButton').addClass('d-none');
+    }
 }
+
 
 function removePart(serviceIndex, partIndex) {
     var partsContainer ;/* Encuentra el contenedor de partes para el servicio específico */;
