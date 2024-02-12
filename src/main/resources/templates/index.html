@@ -60,10 +60,12 @@
                     <tr th:each="ticket : ${tickets}">
                         <td th:text="${ticket?.id}">ID</td>
                         <td th:text="${ticket?.description}">Descripción</td>
-                        <td th:text="${ticket.status?.name}">Estado</td>
+                        <td class="text-center">
+                            <span th:text="${ticket.status?.name}" th:classappend="'badge rounded-pill me-2 p-2 bg-' + ${ticket.status?.color}">Estado</span>
+                        </td>
                         <td th:text="${ticket.customer?.firstName}">Cliente</td>
                         <td th:text="${ticket.device?.category?.name}">Dispositivo</td>
-                        <td th:text="${ticket.device?.brand?.name}">Dispositivo</td>
+                        <td th:text="${ticket.device?.brand?.name}">Brand</td>
                         <td th:text="${#temporals.format(ticket.creationDate, 'dd/MM/yyyy HH:mm')}">Fecha de Creación</td>
                         <td>
                             <div class="dropdown">
@@ -87,6 +89,7 @@
     </section>
 </main>
 <div class="mb-5 pb-5"></div>
+
 <footer th:replace="~{fragments/site :: site-footer}"></footer>
 
 <script src="datatables/datatables.min.js"></script>

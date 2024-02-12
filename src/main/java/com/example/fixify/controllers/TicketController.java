@@ -44,18 +44,21 @@ public class TicketController {
     private final UsuarioService userService;
 
     @Autowired
-    public TicketController(TicketService ticketService, CustomerService customerService, DeviceService deviceService, UsuarioService userService) {
+    public TicketController(TicketService ticketService, CustomerService customerService, DeviceService deviceService, UsuarioService userService, TemplateEngine templateEngine, PdfGenerationService pdfGenerationService) {
         this.ticketService = ticketService;
         this.customerService = customerService;
         this.deviceService = deviceService;
         this.userService = userService;
+        this.templateEngine = templateEngine;
+        this.pdfGenerationService = pdfGenerationService;
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket, Principal principal) {
         // Obtener el ticket existente
-        System.out.println("id = " + id);
-        System.out.println("ticket = " + ticket);
+
+        logger.info("id: {}", id);
+        logger.info("ticket: {}", ticket);
         Optional<Ticket> existingTicketOptional  = ticketService.findOneById(id);
         if (!existingTicketOptional.isPresent()) {
             return ResponseEntity.notFound().build();
@@ -65,14 +68,27 @@ public class TicketController {
 
         String username = principal.getName();
         UserDetails currentUser = userService.loadUserByUsername(username);
+        TicketStatus status = new TicketStatus();
+        if (ticket.getStatus() != null){
+            existingTicket.setStatus(ticket.getStatus());
+        }else{
+            status.setId(2L);
+            existingTicket.setStatus(status);
+        }
+
+         // Ajusta esto según cómo se configure tu modelo
+// Establece cualquier otro campo necesario en TicketStatus
+
+
 
         existingTicket.setTechnicalReview(ticket.getTechnicalReview());
         existingTicket.setUpdatedBy((Usuario) currentUser);
-
-        for (ServicesTicket servicio : ticket.getServicios()) {
-            // Aquí, cada 'servicio' es un objeto ServicesTicket
-            existingTicket.getServicios().add(servicio);
-            servicio.setTicket(existingTicket); // Si la relación es bidireccional, establece también la relación inversa
+        if (ticket.getServicios() != null) {
+            for (ServicesTicket servicio : ticket.getServicios()) {
+                // Aquí, cada 'servicio' es un objeto ServicesTicket
+                existingTicket.getServicios().add(servicio);
+                servicio.setTicket(existingTicket); // Si la relación es bidireccional, establece también la relación inversa
+            }
         }
 
         Ticket updatedTicket = ticketService.saveTicket(existingTicket);
@@ -148,7 +164,7 @@ public class TicketController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminarTicket(@PathVariable Long id) {
-        System.out.println("id = " + id);
+        logger.info("id: {}", id);
         try {
             // Se envía cero porque es el estado eliminado
             Long estado = 0L;
