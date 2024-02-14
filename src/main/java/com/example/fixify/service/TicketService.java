@@ -28,10 +28,6 @@ public class TicketService {
         return ticketRepository.findById(id);
     }
 
-    public List<Ticket> findAllTickets() {
-
-        return ticketRepository.findAll();
-    }
 
     public List<Ticket> findAllActiveTickets() {
         TicketStatus status = ticketStatusRepository.findById(0L)
@@ -46,9 +42,6 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
-    public Optional<Ticket> findTicketById(Long id) {
-        return ticketRepository.findById(id);
-    }
 
     public List<Object[]> countTicketsByStatus() {
         Set<Long> statusIds = new HashSet<>(Arrays.asList(1L, 2L, 5L, 7L));

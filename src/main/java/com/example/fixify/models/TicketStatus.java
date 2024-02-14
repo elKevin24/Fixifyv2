@@ -2,11 +2,12 @@ package com.example.fixify.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @Data
 @Entity
-@ToString
 @Table(name = "ticket_statuses")
 public class TicketStatus {
     @Id

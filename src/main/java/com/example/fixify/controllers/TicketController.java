@@ -55,16 +55,17 @@ public class TicketController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket, Principal principal) {
-        // Obtener el ticket existente
 
         logger.info("id: {}", id);
         logger.info("ticket: {}", ticket);
+        logger.info("ticket.getServicios: {}", ticket.getServicios());
         Optional<Ticket> existingTicketOptional  = ticketService.findOneById(id);
         if (!existingTicketOptional.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
         Ticket existingTicket = existingTicketOptional.get();
+        System.out.println("existingTicket = " + existingTicket);
 
         String username = principal.getName();
         UserDetails currentUser = userService.loadUserByUsername(username);
@@ -76,18 +77,18 @@ public class TicketController {
             existingTicket.setStatus(status);
         }
 
-         // Ajusta esto según cómo se configure tu modelo
-// Establece cualquier otro campo necesario en TicketStatus
-
-
+        // Ajusta esto según cómo se configure tu modelo
+        // Establece cualquier otro campo necesario en TicketStatus
 
         existingTicket.setTechnicalReview(ticket.getTechnicalReview());
         existingTicket.setUpdatedBy((Usuario) currentUser);
         if (ticket.getServicios() != null) {
-            for (ServicesTicket servicio : ticket.getServicios()) {
-                // Aquí, cada 'servicio' es un objeto ServicesTicket
-                existingTicket.getServicios().add(servicio);
-                servicio.setTicket(existingTicket); // Si la relación es bidireccional, establece también la relación inversa
+            for (ServicesTicket receivedService : ticket.getServicios()) {
+                // Aquí puedes ajustar los campos de receivedService según sea necesario antes de añadirlo
+                // Por ejemplo, establecer el ticket actual al servicio para mantener la relación bidireccional
+                receivedService.setTicket(existingTicket);
+                // Añade el servicio al ticket existente
+                existingTicket.getServicios().add(receivedService);
             }
         }
 

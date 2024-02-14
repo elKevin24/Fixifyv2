@@ -3,8 +3,7 @@ $(document).ready( function() {
         event.preventDefault();
 
         let formData = new FormData(this);
-        console.log(JSON.stringify(formData));
-        console.log(formData);
+        formData.forEach((value, key) => console.log(`${key}: ${value}`));
         let dataObj = {};
 
         for (let [key, value] of formData.entries()) {
@@ -55,28 +54,38 @@ function addService() {
     let container = $("#servicios-container");
     let index = container.children().length;
     console.log(index)
-    index = index-1
-    console.log(index)
+    index = index-1; // Ajustas el índice para usarlo en el nombre de los inputs
+    console.log(index);
+
     // Crear y añadir el div para la fila
     let divRow = $('<div>', {
-        class: 'row mb-1 align-items-center',
+        class: 'row g-3 align-items-center', // 'g-3' para un poco de espacio entre columnas
         id: 'service-' + index
-    }); // mb-2 para un pequeño margen inferior
+    });
 
-    // Crear y añadir el input para la descripción del servicio
-    let divInput = $('<div>', {class: 'col-md-9 pe-0'}); // col-8 para un ancho más grande
+    // Input para la descripción del servicio
+    let divDescripcion = $('<div>', {class: 'col-md-6 col-lg-7'}); // Ajustado para más espacio en descripción
     $('<input>', {
         type: 'text',
         class: 'form-control',
         placeholder: 'Descripción del Servicio',
-        name: 'servicios[' + index + '].descripcion'
-    }).appendTo(divInput);
+        name: 'servicios[' + index + '].description'
+    }).appendTo(divDescripcion);
 
-    divInput.appendTo(divRow);
+    // Input para el precio del servicio
+    let divPrecio = $('<div>', {class: 'col-md-4 col-lg-3'}); // Ajustado para espacio en precio
+    $('<input>', {
+        type: 'number',
+        class: 'form-control',
+        placeholder: '000.00',
+        name: 'servicios[' + index + '].price',
+        min: '0',
+        step: '0.01'
+    }).appendTo(divPrecio);
 
-    // Crear y añadir el botón para añadir partes
-    let divButtons = $('<div>', {class: 'col-md-3 d-flex justify-content-end ps-0'});
-
+    // Botones para añadir y eliminar servicios
+    let divButtons = $('<div>', {class: 'col-md-2 col-lg-2 d-flex justify-content-end'}); // Asegura que los botones estén al final
+    // Botón de añadir parte
     $('<button>', {
         type: 'button',
         html: '&#43;', // Símbolo de "más"
@@ -85,17 +94,19 @@ function addService() {
             addPart(index);
         }
     }).appendTo(divButtons);
-
-
+    // Botón de eliminar servicio
     $('<button>', {
         type: 'button',
-        html: '&#45;',
+        html: '&#45;', // Símbolo de "menos"
         class: 'btn btn-danger',
         click: function () {
             removeService(index);
         }
     }).appendTo(divButtons);
 
+    // Añadir los contenedores de inputs y botones al contenedor de la fila
+    divDescripcion.appendTo(divRow);
+    divPrecio.appendTo(divRow);
     divButtons.appendTo(divRow);
 
     // Contenedor para las partes de este servicio
@@ -104,39 +115,54 @@ function addService() {
         class: 'parts-container mt-1'
     }).appendTo(divRow);
 
+    // Añadir la fila completa al contenedor principal
     divRow.appendTo(container);
 }
-
 function addPart(serviceIndex) {
     let partsContainer = $('#parts-container-' + serviceIndex);
     let partIndex = partsContainer.children().length;
 
     let divPartRow = $('<div>', {
-        class: 'row g-3 align-items-center mb-1 ',
+        class: 'row g-3 align-items-center mb-1 ms-2',
         id: 'part-' + serviceIndex + '-' + partIndex
     });
 
-    let divPartInput = $('<div>', {class: 'col-md ms-3'});
+    // Input para la descripción de la parte
+    let divPartInput = $('<div>', {class: 'col-7'}); // Usa col-6 para ocupar la mitad del espacio en pantallas pequeñas
     $('<input>', {
         type: 'text',
         class: 'form-control',
         placeholder: 'Descripción de la Parte',
-        name: 'servicios[' + serviceIndex + '].partes[' + partIndex + '].descripcion'
+        name: 'servicios[' + serviceIndex + '].partes[' + partIndex + '].description'
     }).appendTo(divPartInput);
 
-    let divPartButton = $('<div>', {class: 'col-auto'});
+    // Input para el precio de la parte
+    let divPartPrice = $('<div>', {class: 'col-3'}); // Usa col-4 para ocupar menos espacio que la descripción
+    $('<input>', {
+        type: 'number',
+        class: 'form-control',
+        placeholder: '000.00',
+        name: 'servicios[' + serviceIndex + '].partes[' + partIndex + '].price',
+        min: '0', // No números negativos
+    }).appendTo(divPartPrice);
+
+    // Botón para eliminar la parte
+    let divPartButton = $('<div>', {class: 'col-2'}); // Usa col-2 para el botón, asegurando que ocupe el espacio mínimo necesario
     $('<button>', {
         type: 'button',
-        html: '&#45;', // Símbolo de "menos" para eliminar parte
-        class: 'btn btn-danger',
+        html: '&#45;', // Símbolo de "menos"
+        class: 'btn btn-danger', // btn-sm para botones más pequeños en pantallas pequeñas
         click: function () {
-            $(this).closest('.row').remove(); // Elimina la fila de esta parte específica
+            $(this).closest('.row').remove(); // Elimina esta parte específica
         }
     }).appendTo(divPartButton);
 
+    // Añadir los elementos a la fila
     divPartInput.appendTo(divPartRow);
+    divPartPrice.appendTo(divPartRow);
     divPartButton.appendTo(divPartRow);
 
+    // Añadir la fila completa al contenedor de partes
     divPartRow.appendTo(partsContainer);
 }
 

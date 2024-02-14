@@ -1,13 +1,17 @@
 package com.example.fixify.models;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@ToString
+
 @Data
 @NoArgsConstructor
 @DynamicInsert
@@ -44,8 +48,6 @@ public class Ticket {
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
-
-
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServicesTicket> servicios;
 
@@ -54,5 +56,6 @@ public class Ticket {
 
     @ManyToOne
     private Usuario updatedBy;
+
 
 }
