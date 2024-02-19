@@ -8,6 +8,7 @@ import com.example.fixify.repository.TicketStatusRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -36,7 +37,7 @@ public class TicketService {
         return ticketRepository.findAllByStatusIsNot(status);
     }
 
-
+    @Transactional
     public Ticket saveTicket(Ticket ticket) {
         // Aquí podrías agregar lógica antes de guardar el ticket
         return ticketRepository.save(ticket);

@@ -1,33 +1,42 @@
-$(document).ready( function() {
-    $("#ticketForm").submit(function(event) {
+$(document).ready(function () {
+    $("#ticketForm").submit(function (event) {
         event.preventDefault();
 
         let formData = new FormData(this);
         formData.forEach((value, key) => console.log(`${key}: ${value}`));
-        let dataObj = {};
+        let dataObj = { servicios: [] };
 
         for (let [key, value] of formData.entries()) {
+            // Procesar campos de servicios y partes
             if (key.startsWith("servicios[")) {
-                let match = key.match(/servicios\[(\d+)\]\.(.+)/);
-                if (match) {
-                    let index = parseInt(match[1]);
-                    let property = match[2];
-                    dataObj.servicios = dataObj.servicios || [];
-                    dataObj.servicios[index] = dataObj.servicios[index] || {};
-                    dataObj.servicios[index][property] = value;
+                let serviceMatch = key.match(/servicios\[(\d+)\](\.partes\[(\d+)\])?\.(.+)/);
+                if (serviceMatch) {
+                    let serviceIndex = parseInt(serviceMatch[1], 10);
+                    let partIndex = serviceMatch[3] ? parseInt(serviceMatch[3], 10) : null;
+                    let property = serviceMatch[4];
+
+                    dataObj.servicios[serviceIndex] = dataObj.servicios[serviceIndex] || {};
+
+                    if (partIndex !== null) {
+                        dataObj.servicios[serviceIndex].parts = dataObj.servicios[serviceIndex].parts || [];
+                        dataObj.servicios[serviceIndex].parts[partIndex] = dataObj.servicios[serviceIndex].parts[partIndex] || {};
+                        dataObj.servicios[serviceIndex].parts[partIndex][property] = value;
+                    } else {
+                        dataObj.servicios[serviceIndex][property] = value;
+                    }
                 }
             } else {
+                // Procesar campos generales del Ticket como id y technicalReview
                 dataObj[key] = value;
             }
         }
 
-        // Aquí puedes enviar el dataObj como JSON a tu servidor
         console.log(JSON.stringify(dataObj));
 
         let ticketId = $("input[name='id']").val();
 
         $.ajax({
-            url: '/fixify/tickets/update/'+ ticketId, // URL del controlador
+            url: '/fixify/tickets/update/' + ticketId, // URL del controlador
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(dataObj),
@@ -49,13 +58,20 @@ $(document).ready( function() {
     });
 });
 
+function calcularSuma() {
+    const campos = document.getElementsByClassName("precio");
+    let suma = 0;
+    for (let i = 0; i < campos.length; i++) {
+        suma += Number(campos[i].value) || 0;
+    }
+    document.getElementById("suma").innerText = suma;
+}
+
 function addService() {
 
     let container = $("#servicios-container");
     let index = container.children().length;
     console.log(index)
-    index = index-1; // Ajustas el índice para usarlo en el nombre de los inputs
-    console.log(index);
 
     // Crear y añadir el div para la fila
     let divRow = $('<div>', {
@@ -76,11 +92,16 @@ function addService() {
     let divPrecio = $('<div>', {class: 'col-md-4 col-lg-3'}); // Ajustado para espacio en precio
     $('<input>', {
         type: 'number',
-        class: 'form-control',
+        class: 'form-control precio',
         placeholder: '000.00',
         name: 'servicios[' + index + '].price',
         min: '0',
-        step: '0.01'
+        step: '0.01',
+        on: {
+            input: function () {
+                calcularSuma();
+            }
+        }
     }).appendTo(divPrecio);
 
     // Botones para añadir y eliminar servicios
@@ -117,7 +138,11 @@ function addService() {
 
     // Añadir la fila completa al contenedor principal
     divRow.appendTo(container);
+    container.on('input', '.precio', function () {
+        calcularSuma()
+    })
 }
+
 function addPart(serviceIndex) {
     let partsContainer = $('#parts-container-' + serviceIndex);
     let partIndex = partsContainer.children().length;
@@ -140,10 +165,11 @@ function addPart(serviceIndex) {
     let divPartPrice = $('<div>', {class: 'col-3'}); // Usa col-4 para ocupar menos espacio que la descripción
     $('<input>', {
         type: 'number',
-        class: 'form-control',
+        class: 'form-control precio',
         placeholder: '000.00',
         name: 'servicios[' + serviceIndex + '].partes[' + partIndex + '].price',
-        min: '0', // No números negativos
+        min: '0',
+        oninput: calcularSuma
     }).appendTo(divPartPrice);
 
     // Botón para eliminar la parte
@@ -177,14 +203,15 @@ function removeService(serviceIndex) {
         $('#deleteServiceButton').addClass('d-none');
     }
 }
-function cancelTicket(){
+
+function cancelTicket() {
     const ticketId = $('#ticket_id').val();
 
     const confirmCancel = confirm("¿Estás seguro de que deseas cancelar este ticket?");
     if (confirmCancel) {
 
         $.ajax({
-            url: '/fixify/tickets/update/'+ ticketId, // URL del controlador
+            url: '/fixify/tickets/update/' + ticketId, // URL del controlador
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify({ // Convierte el objeto JavaScript a una cadena JSON
@@ -212,48 +239,7 @@ function cancelTicket(){
         // Recuerda que ticketId ya está disponible gracias al código anterior
     }
     console.warn("El ID del ticket es: ", ticketId);
-    // $.ajax({
-    //     url: '/ruta/a/tu/controlador/cancelar/' + ticketId,
-    //     type: 'POST', // o 'PUT', según tu backend
-    //     // En caso de que necesites enviar un token CSRF u otros headers, aquí es cómo añadirlos:
-    //     // headers: {
-    //     //     'X-CSRF-TOKEN': token
-    //     // },
-    //     success: function(response) {
-    //         alert('Ticket cancelado con éxito.');
-    //         // Opcional: redirigir o actualizar la UI aquí
-    //     },
-    //     error: function(xhr, status, error) {
-    //         alert('Hubo un problema al cancelar el ticket.');
-    //     }
-    // });
-
 }
-$('#cancelTicketBtn').click(function() {
-    $('#cancelTicketModal').modal('show');
-
-    // const isConfirmed = confirm("¿Estás seguro de que deseas cancelar este ticket?");
-    // if (isConfirmed) {
-        // Asume que 'ticketId' está disponible, podría ser insertado en el DOM o en una variable de JS
-        console.warn("elimido")
-        // $.ajax({
-        //     url: '/ruta/a/tu/controlador/cancelar/' + ticketId,
-        //     type: 'POST', // o 'PUT', según tu backend
-        //     // En caso de que necesites enviar un token CSRF u otros headers, aquí es cómo añadirlos:
-        //     // headers: {
-        //     //     'X-CSRF-TOKEN': token
-        //     // },
-        //     success: function(response) {
-        //         alert('Ticket cancelado con éxito.');
-        //         // Opcional: redirigir o actualizar la UI aquí
-        //     },
-        //     error: function(xhr, status, error) {
-        //         alert('Hubo un problema al cancelar el ticket.');
-        //     }
-        // });
-    // }
-});
-
 
 
 

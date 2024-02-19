@@ -28,5 +28,4 @@ public class Part {
     @JoinColumn(name = "servicio_id")
     private ServicesTicket servicio;
 
-    // Getters and setters
 }

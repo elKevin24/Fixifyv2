@@ -21,9 +21,7 @@ import org.thymeleaf.context.Context;
 
 import java.io.ByteArrayInputStream;
 import java.security.Principal;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/tickets")
@@ -82,14 +80,14 @@ public class TicketController {
 
         existingTicket.setTechnicalReview(ticket.getTechnicalReview());
         existingTicket.setUpdatedBy((Usuario) currentUser);
-        if (ticket.getServicios() != null) {
+        if (ticket.getServicios() != null && !ticket.getServicios().isEmpty()) {
+            List<ServicesTicket> servicesTicketList = new ArrayList<>();
+
             for (ServicesTicket receivedService : ticket.getServicios()) {
-                // Aquí puedes ajustar los campos de receivedService según sea necesario antes de añadirlo
-                // Por ejemplo, establecer el ticket actual al servicio para mantener la relación bidireccional
-                receivedService.setTicket(existingTicket);
-                // Añade el servicio al ticket existente
-                existingTicket.getServicios().add(receivedService);
+                ServicesTicket newService = getServicesTicket(receivedService, existingTicket);
+                servicesTicketList.add(newService);
             }
+            existingTicket.getServicios().addAll(servicesTicketList);
         }
 
         Ticket updatedTicket = ticketService.saveTicket(existingTicket);
@@ -99,6 +97,29 @@ public class TicketController {
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la actualización"); // Puedes personalizar el mensaje de error
         }
+    }
+
+    private static ServicesTicket getServicesTicket(ServicesTicket receivedService, Ticket existingTicket) {
+        List<Part> listParts = new ArrayList<>();
+
+        ServicesTicket newService = new ServicesTicket();
+        newService.setPrice(receivedService.getPrice());
+        newService.setDescription(receivedService.getDescription());
+        newService.setTicket(existingTicket);
+        if (receivedService.getParts() != null && !receivedService.getParts().isEmpty()){
+            for (Part receivedPart : receivedService.getParts()) {
+                Part newPart = new Part();
+                newPart.setPrice(receivedPart.getPrice());
+                newPart.setDescription(receivedPart.getDescription());
+                newPart.setServicio(newService);
+                listParts.add(newPart);
+            }
+
+            newService.setParts(listParts);
+
+
+        }
+        return newService;
     }
 
     @GetMapping("/ticketPdf/{ticketId}")

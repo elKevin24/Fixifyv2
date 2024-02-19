@@ -29,7 +29,7 @@ public class ServicesTicket {
     private List<Part> parts;
 
     @ManyToOne
-    @JoinColumn(name = "ticket_id_service")
+    @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
 }

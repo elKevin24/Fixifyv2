@@ -56,6 +56,4 @@ public class Ticket {
 
     @ManyToOne
     private Usuario updatedBy;
-
-
 }

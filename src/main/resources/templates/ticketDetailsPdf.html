@@ -62,6 +62,18 @@
             color: #155724;
             font-size: 0.9em;
         }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .table th {
+            background-color: #007bff;
+            color: white;
+        }
         /* Eliminamos los estilos de los botones ya que no son necesarios */
     </style>
 </head>
@@ -99,6 +111,35 @@
                 <p>Descripción: <span th:text="${ticket.description}">este es un ticket de prueba</span></p>
                 <p>Estado: <span th:text="${ticket.status.name}" class="badge">Creado</span></p>
                 <p>Fecha de Creación: <span th:text="${ticket.creationDate}">2024-01-15T21:28:36.700244</span></p>
+            </div>
+
+            <div class="section-title">Servicios</div>
+            <div class="section" th:if="${ticket.servicios != null && !ticket.servicios.isEmpty()}">
+                <div th:each="servicio : ${ticket.servicios}">
+                    <div class="row">
+                        <p class="col">Descripción: <span th:text="${servicio.description}">Servicio X</span></p>
+                        <p class="col">Precio: <span th:text="${servicio.price}">100</span></p>
+                    </div>
+                    <!-- Sección de Partes -->
+                    <div th:if="${servicio.parts != null && !servicio.parts.isEmpty()}">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Parte</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="parte : ${servicio.parts}">
+                                <td th:text="${parte.name}">Parte 1</td>
+                                <td th:text="${parte.description}">Descripción de la parte</td>
+                                <td th:text="${parte.price}">50</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
