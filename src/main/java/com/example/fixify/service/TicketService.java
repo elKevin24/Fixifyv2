@@ -37,6 +37,10 @@ public class TicketService {
         return ticketRepository.findAllByStatusIsNot(status);
     }
 
+    public List<Ticket> getAllTicketsSortedByCreationDateDesc() {
+        return ticketRepository.findAllByOrderByCreationDateDesc();
+    }
+
     @Transactional
     public Ticket saveTicket(Ticket ticket) {
         // Aquí podrías agregar lógica antes de guardar el ticket
@@ -65,4 +69,6 @@ public class TicketService {
         // Guardar el ticket actualizado
         ticketRepository.save(ticket);
     }
+
+
 }

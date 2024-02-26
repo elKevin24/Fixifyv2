@@ -1,21 +1,24 @@
 package com.example.fixify.models;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Data
 @NoArgsConstructor
 @DynamicInsert
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "tickets")
 public class Ticket {
 
@@ -45,15 +48,22 @@ public class Ticket {
     @JoinColumn(name = "device_id")
     private Device device;
 
-    @Column(name = "creation_date")
-    private LocalDateTime creationDate;
+
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServicesTicket> servicios;
 
     @ManyToOne
+    @CreatedBy
     private Usuario createdBy;
+
+    @CreatedDate
+    @Column(name = "creation_date")
+    private LocalDateTime creationDate;
 
     @ManyToOne
     private Usuario updatedBy;
+
+    @LastModifiedDate
+    private LocalDateTime lastModifiedDate;
 }

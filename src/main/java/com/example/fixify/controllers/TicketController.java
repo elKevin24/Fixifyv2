@@ -6,6 +6,7 @@ import com.example.fixify.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,21 +29,17 @@ import java.util.*;
 public class TicketController {
     private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
 
-
     private final TicketService ticketService;
     private final CustomerService customerService;
     private final DeviceService deviceService;
-
-
-    private TemplateEngine templateEngine;
-
-    private PdfGenerationService pdfGenerationService;
-
-
     private final UsuarioService userService;
+    private final TemplateEngine templateEngine;
+    private final PdfGenerationService pdfGenerationService;
+
 
     @Autowired
-    public TicketController(TicketService ticketService, CustomerService customerService, DeviceService deviceService, UsuarioService userService, TemplateEngine templateEngine, PdfGenerationService pdfGenerationService) {
+    public TicketController(TicketService ticketService, CustomerService customerService, DeviceService deviceService, UsuarioService userService, @Lazy TemplateEngine templateEngine,
+                            @Lazy PdfGenerationService pdfGenerationService) {
         this.ticketService = ticketService;
         this.customerService = customerService;
         this.deviceService = deviceService;
@@ -52,7 +49,7 @@ public class TicketController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket, Principal principal) {
+    public ResponseEntity<String> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket, Principal principal) {
 
         logger.info("id: {}", id);
         logger.info("ticket: {}", ticket);
@@ -63,7 +60,7 @@ public class TicketController {
         }
 
         Ticket existingTicket = existingTicketOptional.get();
-        System.out.println("existingTicket = " + existingTicket);
+        logger.info("existingTicket: {}", existingTicket);
 
         String username = principal.getName();
         UserDetails currentUser = userService.loadUserByUsername(username);
@@ -145,7 +142,6 @@ public class TicketController {
 
     @GetMapping
     public String listTickets(Model model) {
-//        model.addAttribute("tickets", ticketService.findAllTickets());
         model.addAttribute("customers", customerService.findAllCustomer());
         model.addAttribute("ticket", new Ticket());
         model.addAttribute("customer", new Customer()); // Agregar objeto Customer
@@ -157,17 +153,13 @@ public class TicketController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addTicket(@ModelAttribute("ticket") Ticket ticket, Principal principal) {
+    public ResponseEntity<?> addTicket(@ModelAttribute("ticket") Ticket ticket) {
         try {
-            String username = principal.getName();
-            UserDetails currentUser = userService.loadUserByUsername(username);
-            ticket.setCreatedBy((Usuario) currentUser);
-
+            // Ahora la lógica para establecer el usuario que crea el ticket se maneja automáticamente
             Ticket savedTicket = ticketService.saveTicket(ticket);
             logger.info("Ticket creado con éxito: {}", savedTicket);
 
             return ResponseEntity.ok(Map.of("message", "Ticket creado con éxito", "id", savedTicket.getId()));
-
         } catch (Exception e) {
             logger.error("Error al crear el ticket: {}", e.getMessage(), e);
 
@@ -175,6 +167,7 @@ public class TicketController {
                     .body(Map.of("error", e.getMessage()));
         }
     }
+
 
     @GetMapping("/{id}")
     public String getTicketById(@PathVariable Long id, Model model) {
@@ -185,7 +178,7 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarTicket(@PathVariable Long id) {
+    public ResponseEntity<String> eliminarTicket(@PathVariable Long id) {
         logger.info("id: {}", id);
         try {
             // Se envía cero porque es el estado eliminado
