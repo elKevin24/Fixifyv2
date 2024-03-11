@@ -23,9 +23,7 @@ public class Part {
 
     private String Description;
     // Other properties like price, quantity, etc.
-
     @ManyToOne
     @JoinColumn(name = "servicio_id")
     private ServicesTicket servicio;
-
 }

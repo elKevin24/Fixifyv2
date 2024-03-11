@@ -2,146 +2,186 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Detale de ticket</title>
+    <title>Detalle de Ticket</title>
     <meta charset="UTF-8">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 20px;
-            /* background-color: #f5f5f5; */
+            background-color: #f5f5f5;
         }
+
+        .card,
+        .section,
+        .badge,
+        .table {
+            border-radius: 8px;
+            /* Haciendo los bordes redondeados homogéneos */
+        }
+
         .card {
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
         }
+
         .card-header {
-            background-color: #007bff;
+            background-color: #06255B;
             color: #ffffff;
-            padding: 10px 15px;
-            border-radius: 5px 5px 0 0;
-            font-size: 1.4em;
+            padding: 10px;
+            font-size: 1.2em;
             font-weight: bold;
             text-align: center;
         }
-        .card-body {
-            padding: 10px 15px;
-            background-color: #fff; /* Agregamos un fondo sombreado */
-        }
+
         .section-title {
-            color: #007bff;
-            font-size: 1.2em;
+            color: #042840;
+            font-size: 1.1em;
             font-weight: bold;
-            margin-bottom: 0.75em;
+            margin-bottom: 8px;
+            margin-left: 5px;
         }
+
         .section {
-            background-color: #f7f7f7;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            padding: 1px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            margin-bottom: 5px;
+            padding: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .row {
             display: flex;
-            margin-bottom: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
         }
+
         .col {
             flex: 1;
-            padding: 10px;
-            margin-right: 10px;
+            padding: 8px;
+            margin-right: 8px;
+            margin-bottom: 8px;
         }
+
         .col:last-child {
             margin-right: 0;
         }
+
         .badge {
-            padding: 0.25em 0.6em;
-            background-color: #c8e6c9;
-            border-radius: 4px;
-            color: #155724;
-            font-size: 0.9em;
+            display: inline-block;
+            padding: 0.4em 0.8em;
+            background-color: #A4C2F5;
+            color: #ffffff;
+            font-size: 0.8em;
         }
+
         .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .table th, .table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        .table th {
-            background-color: #007bff;
-            color: white;
-        }
-        /* Eliminamos los estilos de los botones ya que no son necesarios */
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+        border-collapse: collapse;
+    }
+
+    .table th, .table td {
+        border-bottom: 1px solid #dee2e6; /* Establece el borde inferior */
+        padding: 0.75rem;
+        vertical-align: top;
+    }
+
+    .table th {
+        background-color: #06255B; /* Fondo del encabezado de la tabla */
+        color: #ffffff; /* Texto blanco en el encabezado de la tabla */
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .table tbody + tbody {
+        border-top: 2px solid #dee2e6;
+    }
+
+    .table-sm th, .table-sm td {
+        padding: 0.3rem;
+    }
+
+    .table-sm th, .table-sm td {
+        font-size: 0.875rem;
+    }
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        margin-bottom: 5px; /* Puedes ajustar este valor según tus necesidades */
+    }
     </style>
+
 </head>
+
 <body>
     <div class="card">
-        Detalles del Ticket <span th:text="${ticket}">144</span>
         <div class="card-header">
-            Detalles del Ticket <span th:text="${ticket.id}">144</span>
+            Detalles del Ticket <span th:text="${ticketDto.id}">144</span>
         </div>
-        <div class="card-body">
-            <!-- Cliente -->
-            <div class="section-title">Cliente</div>
-            <div class="section">
-                
-                <div class="row">
-                    <p class="col">Nombre: <span th:text="${ticket.customer.firstName}">Marti</span></p>
-                    <p class="col">Apellido: <span th:text="${ticket.customer.lastName}">Curtiss</span></p>
-                </div>
-            </div>
-            <div class="section-title">Dispositivo</div>
-            <!-- Dispositivo -->
-            <div class="section">
-                
-                <div class="row">
-                    <p class="col">Marca: <span th:text="${ticket.device?.brand?.name}">Aoc</span></p>
-                    <p class="col">Categoría: <span th:text="${ticket.device?.category.name}">Smartphone</span></p>
-                    <p class="col">Modelo: <span th:text="${ticket.device.model}">2222</span></p>
-                    <p class="col">Serie: <span th:text="${ticket.device.series}"></span></p>
-                </div>
-            </div>
-            <div class="section-title">Información General</div>
-            <!-- Información General -->
-            <div class="section">
-                
-                <p>Descripción: <span th:text="${ticket.description}">este es un ticket de prueba</span></p>
-                <p>Estado: <span th:text="${ticket.status.name}" class="badge">Creado</span></p>
-                <p>Fecha de Creación: <span th:text="${ticket.creationDate}">2024-01-15T21:28:36.700244</span></p>
-            </div>
 
-            <div class="section-title">Servicios</div>
-            <div class="section" th:if="${ticket.servicios != null && !ticket.servicios.isEmpty()}">
-                <div th:each="servicio : ${ticket.servicios}">
-                    <div class="row">
-                        <p class="col">Descripción: <span th:text="${servicio.description}">Servicio X</span></p>
-                        <p class="col">Precio: <span th:text="${servicio.price}">100</span></p>
-                    </div>
-                    <!-- Sección de Partes -->
-                    <div th:if="${servicio.parts != null && !servicio.parts.isEmpty()}">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>Parte</th>
-                                <th>Descripción</th>
-                                <th>Precio</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="parte : ${servicio.parts}">
-                                <td th:text="${parte.name}">Parte 1</td>
-                                <td th:text="${parte.description}">Descripción de la parte</td>
-                                <td th:text="${parte.price}">50</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <!-- Cliente -->
+        <div class="section-title">Cliente</div>
+        <div class="section">
+            <div class="row">
+                <div class="col">Nombre: <span th:text="${ticketDto.customer?.firstName}">Marti</span></div>
+                <div class="col">Apellido: <span th:text="${ticketDto.customer?.lastName}">Curtiss</span></div>
             </div>
         </div>
+
+        <!-- Dispositivo -->
+        <div class="section-title">Dispositivo</div>
+        <div class="section">
+            <div class="row">
+                <div class="col">Marca: <span th:text="${ticketDto.device?.brand?.name}">Aoc</span></div>
+                <div class="col">Categoría: <span th:text="${ticketDto.device?.category.name}">Smartphone</span></div>
+                <div class="col">Modelo: <span th:text="${ticketDto.device.model}">2222</span></div>
+                <div class="col">Serie: <span th:text="${ticketDto.device.series}"></span></div>
+            </div>
+        </div>
+
+        <!-- Información General -->
+        <div class="section-title">Información General</div>
+        <div class="section">
+            <p>Descripción: <span th:text="${ticketDto.description}">este es un ticket de prueba</span></p>
+            <p>Estado: <span th:text="${ticketDto.status.name}" class="badge">Creado</span></p>
+            <p>Fecha de Creación: <span th:text="${#temporals.format(ticketDto.creationDate, 'dd/MM/yyyy HH:mm')}">2024-01-15T21:28:36.700244</span></p>
+        <p>Creado por: <span th:text="${ticketDto.createdName}">UsuarioCreador</span></p>
+        <p>Modificado por: <span th:text="${ticketDto.updatedName != null ? ticketDto.updatedName : 'N/A'}">UsuarioModificador</span>
+        </p>
     </div>
+
+    <!-- Servicios -->
+    <div class="section" th:if="${ticketDto.servicios != null && !ticketDto.servicios.isEmpty()}">
+        <div class="section-title">Servicios</div>
+        <table class="table table-sm ">
+            <thead>
+            <tr>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Parts</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="servicio : ${ticketDto.servicios}">
+                <td th:text="${servicio.description}">Servicio 1</td>
+                <td th:text="${servicio.price}">50</td>
+                <td>
+                    <ul>
+                    <th:block th:each="parte : ${servicio.parts}">
+                        <li><span th:text="${parte.name}">Parte 1 </span>  <span th:text="${parte.description}">Descripción de la parte</span>  Q. <span
+                                th:text="${parte.price}">50</span></li>
+                    </th:block>
+                </ul>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
+
 </html>

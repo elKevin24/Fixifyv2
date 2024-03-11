@@ -48,8 +48,6 @@ public class Ticket {
     @JoinColumn(name = "device_id")
     private Device device;
 
-
-
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServicesTicket> servicios;
 
@@ -57,12 +55,12 @@ public class Ticket {
     @CreatedBy
     private Usuario createdBy;
 
+    @ManyToOne
+    private Usuario updatedBy;
+
     @CreatedDate
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
-
-    @ManyToOne
-    private Usuario updatedBy;
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;

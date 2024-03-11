@@ -11,7 +11,8 @@ public interface TicketMapper {
 
     // Instancia para acceder al mapper sin necesidad de inyectarlo, útil si no usas Spring
     TicketMapper INSTANCE = Mappers.getMapper(TicketMapper.class);
-
+    @Mapping(target = "createdName", source = "createdBy.username")
+    @Mapping(target = "updatedName", source = "updatedBy.username")
     TicketDto toDto(Ticket ticket);
 
     @InheritInverseConfiguration

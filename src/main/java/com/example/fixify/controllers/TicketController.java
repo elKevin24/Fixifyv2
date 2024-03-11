@@ -1,6 +1,7 @@
 package com.example.fixify.controllers;
 
 
+import com.example.fixify.dto.TicketDto;
 import com.example.fixify.models.*;
 import com.example.fixify.service.*;
 import org.slf4j.Logger;
@@ -38,8 +39,8 @@ public class TicketController {
 
 
     @Autowired
-    public TicketController(TicketService ticketService, CustomerService customerService, DeviceService deviceService, UsuarioService userService, @Lazy TemplateEngine templateEngine,
-                            @Lazy PdfGenerationService pdfGenerationService) {
+    public TicketController(TicketService ticketService, CustomerService customerService, DeviceService deviceService, UsuarioService userService, TemplateEngine templateEngine,
+                             PdfGenerationService pdfGenerationService) {
         this.ticketService = ticketService;
         this.customerService = customerService;
         this.deviceService = deviceService;
@@ -121,11 +122,11 @@ public class TicketController {
 
     @GetMapping("/ticketPdf/{ticketId}")
     public ResponseEntity<InputStreamResource> generatePdf(@PathVariable Long ticketId) {
-        Ticket ticket = ticketService.findOneById(ticketId)
+        TicketDto ticketDto = ticketService.findOneDtoById(ticketId)
                 .orElseThrow(() -> new NoSuchElementException("Ticket no encontrado con id: " + ticketId));
 
         Context context = new Context();
-        context.setVariable("ticket", ticket);
+        context.setVariable("ticketDto", ticketDto);
 
         String html = templateEngine.process("ticketDetailsPdf", context);
         ByteArrayInputStream bis = pdfGenerationService.generatePdfFromHtml(html);
