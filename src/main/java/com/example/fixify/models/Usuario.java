@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,9 +20,11 @@ import java.util.List;
 import java.util.Set;
 
 
-@Entity
+
 @ToString
 @Data
+@Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "usuario")
 public class Usuario implements UserDetails {
     @Id
@@ -34,6 +37,9 @@ public class Usuario implements UserDetails {
 
     @Column(name = "username")
     private String username;
+
+    @Column(name = "dpi")
+    private String dpi;
 
     @Column(name = "email")
     private String email;
@@ -54,17 +60,19 @@ public class Usuario implements UserDetails {
     private String direccion;
 
     // Campos para auditoría JPA
+    @ManyToOne
     @CreatedBy
-    @Column(name = "created_by")
-    private String createdBy;
-
+    @JoinColumn(name = "created_by") // Corregir aquí
+    private Usuario createdBy;
+//
     @CreatedDate
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
+    @ManyToOne
     @LastModifiedBy
-    @Column(name = "last_modified_by")
-    private String lastModifiedBy;
+    @JoinColumn(name = "updated_by") // Corregir aquí
+    private Usuario updatedBy;
 
     @LastModifiedDate
     @Column(name = "last_modified_date")

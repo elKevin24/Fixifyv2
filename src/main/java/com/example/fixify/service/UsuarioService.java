@@ -43,6 +43,7 @@ public class UsuarioService implements UserDetailsService {
     public Usuario crearUsuario(Usuario usuario) {
         // Lógica para crear un nuevo usuario con roles y codificar la contraseña
         usuario.setRoles(Collections.singleton("USER")); // Asignación de roles por defecto
+        usuario.setRoles(Collections.singleton("ADMIN")); // Asignación de roles por defecto
         usuario.setPassword(passwordEncoder().encode(usuario.getPassword())); // Codificación de la contraseña
         return usuarioRepository.save(usuario);
     }

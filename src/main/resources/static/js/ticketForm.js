@@ -2,7 +2,8 @@ $(document).ready( function () {
     $('#create').submit(function (event) {
         event.preventDefault();
 
-        let formData = $(this).serialize(); // Serializa los datos del formulario
+        // Obtiene los datos del formulario y los serializa como JSON
+        var formData = JSON.stringify($(this).serializeObject());
 
         $.ajax({
             url: '/fixify/tickets', // URL del controlador
