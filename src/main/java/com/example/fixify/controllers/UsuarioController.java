@@ -25,6 +25,22 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
         this.rolRepository = rolRepository;
     }
+    @PostMapping("/insertar")
+    @ResponseBody
+    public ResponseEntity<Object> insertarDatos(@ModelAttribute Usuario usuario) {
+        System.out.println("usuario = " + usuario);
+        try {
+            Usuario nuevoUsuario = usuarioService.crearUsuario(usuario);
+            nuevoUsuario.setPassword(null); // Por ejemplo, elimina la contraseña
+            nuevoUsuario.setRoles(null); // Por ejemplo, elimina la contraseña
+
+            return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
+        } catch (RuntimeException ex) {
+            // Maneja la excepción genérica y devuelve el detalle del error
+            String errorMessage = "Error al crear el usuario: " + ex.getMessage();
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping
     public String Usuarios(Model model) {

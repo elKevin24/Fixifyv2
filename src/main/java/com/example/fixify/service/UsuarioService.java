@@ -4,12 +4,15 @@ import com.example.fixify.models.Usuario;
 import com.example.fixify.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+// Importa las excepciones necesarias
+import org.springframework.dao.DataAccessException;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,11 +44,13 @@ public class UsuarioService implements UserDetailsService {
     }
 
     public Usuario crearUsuario(Usuario usuario) {
-        // Lógica para crear un nuevo usuario con roles y codificar la contraseña
-        usuario.setRoles(Collections.singleton("USER")); // Asignación de roles por defecto
-        usuario.setRoles(Collections.singleton("ADMIN")); // Asignación de roles por defecto
-        usuario.setPassword(passwordEncoder().encode(usuario.getPassword())); // Codificación de la contraseña
-        return usuarioRepository.save(usuario);
+        try {
+            usuario.setPassword(passwordEncoder().encode(usuario.getPassword())); // Codificación de la contraseña
+            return usuarioRepository.save(usuario);
+        } catch (DataAccessException ex) {
+            // Si hay un error al acceder a la base de datos, lanza una excepción personalizada
+            throw new RuntimeException("Error al crear el usuario en la base de datos", ex);
+        }
     }
 
     public Usuario actualizarUsuario(Long id, Usuario usuario) {

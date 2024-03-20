@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/datatables/datatables.min.css}"/>
     <title>CRUD de Usuarios</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body class="bg-gray-100">
 <div th:replace="~{fragments/site :: site-nav}"></div>
@@ -18,44 +20,42 @@
 
 
                 <!-- Formulario mejorado para crear o editar un usuario -->
-                <form th:object="${usuario}" th:action="@{/usuarios/crear}" method="post">
+                <form th:object="${usuario}" id="insertForm">
                     <div class="row">
                         <!-- Nombres -->
                         <div class="mb-3 col-md-4">
                             <label for="nombres" class="form-label">Nombres:</label>
-                            <input type="text" id="nombres" th:field="*{nombres}" class="form-control" required/>
+                            <input type="text" id="nombres" th:field="*{nombres}" class="form-control" placeholder="KEVIN ESTUARDO" required/>
                         </div>
 
                         <!-- Apellidos -->
                         <div class="mb-3 col-md-4">
                             <label for="apellidos" class="form-label">Apellidos:</label>
-                            <input type="text" id="apellidos" th:field="*{apellidos}" class="form-control" required/>
+                            <input type="text" id="apellidos" th:field="*{apellidos}" class="form-control"  placeholder="CORDON LEMUS" required/>
                         </div>
 
                         <!-- Fecha de Nacimiento -->
-                        <div class="mb-3 col-md-4">
-                            <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento:</label>
-                            <input type="date" id="fechaNacimiento" th:field="*{fechaNacimiento}" class="form-control"/>
-                        </div>
+<!--                        <div class="mb-3 col-md-4">-->
+<!--                            <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento:</label>-->
+<!--                            <input type="date" id="fechaNacimiento" th:field="*{fechaNacimiento}" class="form-control"/>-->
+<!--                        </div>-->
 
                         <!-- Teléfono -->
-                        <div class="mb-3 col-md-4">
-                            <label for="telefono" class="form-label">Teléfono:</label>
-                            <input type="tel" id="telefono" th:field="*{telefono}" class="form-control"/>
-                        </div>
+<!--                        <div class="mb-3 col-md-4">-->
+<!--                            <label for="telefono" class="form-label">Teléfono:</label>-->
+<!--                            <input type="tel" id="telefono" th:field="*{telefono}" class="form-control"/>-->
+<!--                        </div>-->
 
                         <!-- DPI -->
-                        <div class="mb-3 col-md-4">
-                            <label for="dpi" class="form-label">DPI:</label>
-                            <input type="text" id="dpi" th:field="*{dpi}" class="form-control"/>
-                        </div>
-                        <!-- Nombre de Usuario -->
-                        <div class="mb-2 col-md-4">
-                            <label for="username" class="form-label">Usuario:</label>
-                            <input type="text" id="username" th:field="*{username}" class="form-control" required/>
-                        </div>
-
-                        <!-- Contraseña -->
+<!--                        <div class="mb-3 col-md-4">-->
+<!--                            <label for="dpi" class="form-label">DPI:</label>-->
+<!--                            <input type="text" id="dpi" th:field="*{dpi}" class="form-control"/>-->
+<!--                        </div>-->
+<!--                        &lt;!&ndash; Nombre de Usuario &ndash;&gt;-->
+<!--                        <div class="mb-2 col-md-4">-->
+<!--                            <label for="username" class="form-label">Usuario:</label>-->
+<!--                            <input type="text" id="username" th:field="*{username}" class="form-control" required/>-->
+<!--                        </div>-->
                         <!-- Contraseña generada aleatoriamente -->
                         <div class="mb-3 col-md-4">
                             <label for="password" class="form-label">Contraseña generada:</label>
@@ -67,27 +67,28 @@
                             </div>
                         </div>
 
-                        <!-- Correo Electrónico -->
-                        <div class="mb-3 col-md-4">
-                            <label for="email" class="form-label">Correo Electrónico:</label>
-                            <input type="email" id="email" th:field="*{email}" class="form-control" required/>
-                        </div>
+<!--                        &lt;!&ndash; Correo Electrónico &ndash;&gt;-->
+<!--                        <div class="mb-3 col-md-4">-->
+<!--                            <label for="email" class="form-label">Correo Electrónico:</label>-->
+<!--                            <input type="email" id="email" th:field="*{email}" class="form-control" required/>-->
+<!--                        </div>-->
 
 
                         <!-- Roles (multi-select) -->
-<!--                        <div class="mb-3 col-md-4">-->
-<!--                            <label for="roles" class="form-label">Roles:</label>-->
-<!--                            <select id="roles" th:field="*{roles}" class="form-select" multiple>-->
-<!--                                <option th:each="rol : ${roles}" th:value="${rol.id}" th:text="${rol.nombre}"></option>-->
-<!--                            </select>-->
-<!--                        </div>-->
+                        <div class="mb-3 col-md-4">
+                            <label for="roles" class="form-label">Roles:</label>
+                            <select id="roles" th:field="*{roles}" class="form-select" multiple>
+                                <option th:each="rol : ${roles}" th:value="${rol.id}" th:text="${rol.nombre}"></option>
+                            </select>
+                        </div>
                     </div>
 
                     <!-- Botones del formulario -->
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+                        <button type="button" class="btn btn-primary" onclick="insertData()">Guardar Usuario</button>
                     </div>
                 </form>
+                <div id="mensaje"></div>
             </div>
         </div>
     </section>
@@ -109,10 +110,9 @@
             <!-- Otros campos si es necesario -->
             <td>
                 <button type="button" class="btn btn-info" onclick="editarUsuario(${usuario.id})">Editar</button>
-                <button type="button" class="btn btn-danger" onclick="eliminarUsuario(${usuario.id})">Eliminar</button>
-                <button type="button" class="btn btn-warning" onclick="resetPassword(${usuario.id})">Reiniciar
-                    Contraseña
-                </button>
+                <button type="button" class="btn btn-danger" onclick="eliminarUsuario('${usuario.id}')">Eliminar</button>
+                <button type="button" class="btn btn-warning reset-password-btn">Reiniciar Contraseña</button>
+
             </td>
         </tr>
         </tbody>
@@ -124,18 +124,58 @@
 <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/datatables/datatables.min.js}"></script>
 <script th:inline="javascript">
+
+    function insertData() {
+        var form = document.getElementById("insertForm");
+        // Si el formulario es válido, lo enviamos
+        if (form.checkValidity()) {
+            var formData = new FormData(form); // Obtiene los datos del formulario
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/fixify/usuarios/insertar", true);
+            // Obtén el token CSRF de la metaetiqueta
+            var csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+
+            // Adjunta el token CSRF como un encabezado personalizado
+            xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+
+            xhr.onload = function() {
+                if (xhr.status == 201) {
+                    let response = JSON.parse(xhr.responseText);
+                    $('#tablaUsuarios').DataTable().row.add(response).draw();
+                    document.getElementById("mensaje").innerHTML = "Datos insertados correctamente";
+                }
+            };
+
+            xhr.onerror = function() {
+                document.getElementById("mensaje").innerHTML = "Error al enviar la solicitud: " + xhr.responseText;
+            };
+            xhr.send(formData);
+        } else {
+            // Si el formulario no es válido, mostramos mensajes de validación HTML5
+            form.reportValidity();
+        }
+
+    }
+
     // Inicializa el DataTable
     $(document).ready(function () {
-        $('#tablaUsuarios').DataTable({
+        var table = $('#tablaUsuarios').DataTable({
             language: {
                 url: '//cdn.datatables.net/plug-ins/2.0.2/i18n/es-ES.json',
             },
         });
+
+        $('#tablaUsuarios tbody').on('click', '.reset-password-btn', function() {
+            var data = table.row($(this).closest('tr')).data();
+            var usuarioId = data[0]; // Suponiendo que el ID está en la primera columna
+console.log(usuarioId);
+            resetPassword(usuarioId);
+        });
     });
 
-    function resetPassword() {
+    function resetPassword(usuarioId) {
         // Lógica para reiniciar la contraseña
-        alert('Contraseña reiniciada');
+        alert('Contraseña reiniciada', usuarioId);
     }
 
     function editarUsuario(id) {
